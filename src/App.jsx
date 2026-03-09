@@ -171,6 +171,7 @@ const VideoPlayer = () => {
     if (containerRef.current) observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, []);
+  const [isMuted, setIsMuted] = React.useState(true);
 
   return (
     <div ref={containerRef} className="w-full bg-[#0F172A] py-16 px-4">
@@ -187,10 +188,6 @@ const VideoPlayer = () => {
       </div>
 
       <div className="max-w-5xl mx-auto">
-        {/* Caption */}
-        <p className="text-center text-[#F37021] font-bold text-lg mb-6 tracking-wide">
-          {videoMeta.captionEs}
-        </p>
 
         {/* Video Player */}
         <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl"
@@ -199,13 +196,24 @@ const VideoPlayer = () => {
             ref={videoRef}
             src="https://firebasestorage.googleapis.com/v0/b/advancegroup-web-4391643-961a3.firebasestorage.app/o/landing%2Fadvance-group-logistica-distribucion-estrategia-comercial-puerto-rico.m4v?alt=media&token=f23f18c7-1f11-43e7-9103-fe46bc232d4a"
             title={videoMeta.titleEs}
-            className="w-full h-full object-cover"
-            muted
+            className="w-full h-full object-cover" muted={isMuted}
             loop
             playsInline
             preload="metadata"
             aria-label={videoMeta.titleEs}
           />
+          {/* Unmute/Mute button */}
+          <button
+            onClick={() => { setIsMuted(m => !m); if(videoRef.current) videoRef.current.muted = !isMuted; }}
+            className="absolute bottom-4 right-4 bg-black/60 hover:bg-[#F37021] text-white rounded-full p-2 transition-all duration-200 z-10"
+            title={isMuted ? 'Activar sonido' : 'Silenciar'}
+          >
+            {isMuted ? (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            )}
+          </button>
         </div>
       </div>
     </div>
@@ -219,6 +227,7 @@ const App = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [selectedService, setSelectedService] = React.useState(null);
   const [formStatus, setFormStatus] = React.useState('idle');
+  const [selectedServices, setSelectedServices] = React.useState([]);
   const [heroSlide, setHeroSlide] = React.useState(0);
 
   React.useEffect(() => {
@@ -235,6 +244,12 @@ const App = () => {
     });
   }, [filter, searchQuery]);
 
+  const toggleService = (service) => {
+    setSelectedServices(prev =>
+      prev.includes(service) ? prev.filter(s => s !== service) : [...prev, service]
+    );
+  };
+
   const handleContactSubmit = async (e) => {
     e.preventDefault();
     setFormStatus('submitting');
@@ -244,6 +259,7 @@ const App = () => {
         orgId: 'advance-group',
         partyId: 'web_inquiry',
         type: 'contact',
+            serviciosInteres: selectedServices,
         summary: 'Solicitud desde Landing Web',
         description: fd.get('mensaje') || '',
         createdBy: 'landing_web',
@@ -321,9 +337,9 @@ const App = () => {
                   <div className="flex items-center gap-4 px-6 py-4">
                     <div className="flex -space-x-3">
                       {[
-                  { name: 'AxCare', favicon: 'https://www.axcare.com/favicon.ico', desc: 'Plataforma líder de gestión para agencias de cuidado en el hogar.' },
-                  { name: 'TRUST Beauty', favicon: 'https://static.cdninstagram.com/rsrc.php/v3/yI/r/VsNE-OHk_8a.png', desc: 'Marca de belleza limpia y accesible para Latinoamérica.' },
-                  { name: 'Prodigy', favicon: 'https://www.prodigymeter.com/favicon.ico', desc: 'Soluciones inteligentes de medición y eficiencia energética.' },
+                  { name: 'AxCare', favicon: 'https://www.axcare.com/favicon.ico', desc: 'Axis provee servicios de salud y equipos médicos directamente al hogar.' },
+                  { name: 'TRUST Beauty', favicon: 'https://static.cdninstagram.com/rsrc.php/v3/yI/r/VsNE-OHk_8a.png', desc: 'Trust Beauty, marca líder en los salones de belleza con en productos especializados para el cuidado del cabello.' },
+                  { name: 'Prodigy', favicon: 'https://www.prodigymeter.com/favicon.ico', desc: 'Compañía especializada en el desarrollo de sistemas de monitoreo de glucosa en sangre diseñados para ser accesibles, especialmente para personas con discapacidades visuales.' },
                 ].map((client) => (
                   <div key={client.name} className="relative group">
                     <div className="w-10 h-10 rounded-full bg-slate-200 border-2 border-white overflow-hidden cursor-pointer hover:scale-110 transition-transform flex items-center justify-center">
@@ -399,9 +415,9 @@ const App = () => {
                   <div className="space-y-6">
                     <h2 className="text-4xl font-black text-white">Industrias que Atendemos</h2>
                     <p className="text-slate-400 font-medium text-lg leading-relaxed">Advance Group es flexible y adaptable. Trabajamos de manera transversal para potenciar marcas de cualquier sector.</p>
-                    <div className="grid grid-cols-2 gap-4 items-start">
+                    <div className="grid grid-cols-2 gap-4 items-stretch">
                       {['Salud & Bienestar', 'Belleza', 'Automotriz', 'Consumo Masivo', 'Industrial', 'Retail'].map(i => (
-                        <div key={i} className="flex items-center gap-2 text-white/80 font-bold">
+                        <div key={i} className="flex items-center gap-2 text-white/80 font-bold h-full">
                           <div className="w-2 h-2 rounded-full bg-[#4DB6AC]" /> {i}
                         </div>
                       ))}
@@ -512,7 +528,7 @@ const App = () => {
                   <div className="rounded-3xl overflow-hidden border border-white/10" style={{height: '220px'}}>
                     <iframe
                       title="Advance Group PR"
-                      src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d941.9258085!2d-66.72397!3d18.16328!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTjCsDA5JzQ3LjgiTiA2NsKwNDMnMjYuMyJX!5e0!3m2!1ses!2spr!4v1"
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d941.9258085!2d-66.044476!3d18.285087!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8c03687b9b9b9b9b%3A0x1234567890abcdef!2sAdvance+Group!5e0!3m2!1ses!2spr!4v1709999999999!5m2!1ses!2spr"
                       width="100%"
                       height="100%"
                       style={{border: 0}}
@@ -528,21 +544,36 @@ const App = () => {
                   <h3 className="text-2xl font-black mb-6">Solicitud de Alianza</h3>
                   <input required className="w-full px-6 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-orange-500 transition-all font-medium" name="empresa" placeholder="Nombre de su Empresa" />
                   <input required type="email" className="w-full px-6 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-orange-500 transition-all font-medium" name="email" placeholder="Email corporativo" />
-                  <select name="interes" className="w-full px-6 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-orange-500 transition-all font-medium appearance-none">
-                  <option value="">Servicio de interés...</option>
-                  <option value="almacenaje">Almacenaje</option>
-                  <option value="fulfillment">Fulfillment</option>
-                  <option value="distribucion-pr">Distribución en Puerto Rico</option>
-                  <option value="manejo-inventario">Manejo de inventario</option>
-                  <option value="entregas-same-day">Entregas same-day</option>
-                  <option value="representacion-ventas">Representación de ventas</option>
-                  <option value="distribucion-productos">Distribución de productos</option>
-                  <option value="servicio-cliente">Servicio al cliente</option>
-                  <option value="manejo-ordenes">Manejo de órdenes</option>
-                  <option value="ai-tech">AI &amp; Tech</option>
-                  <option value="back-office">Back Office</option>
-                  <option value="otro">Otro</option>
-                </select>
+                  <div>
+                  <p className="text-sm font-semibold text-slate-600 mb-3">Servicio de interés <span className="text-orange-500">*</span></p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {['Distribución','Logística & Almacén','Fulfillment','Estrategia Comercial','Crecimiento de Marcas','Manejo de Órdenes','Soporte Operacional'].map(service => (
+                      <button
+                        key={service}
+                        type="button"
+                        onClick={() => toggleService(service)}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-all text-sm text-left ${
+                          selectedServices.includes(service)
+                            ? 'border-[#F37021] bg-orange-50 text-[#F37021] font-semibold'
+                            : 'border-gray-200 bg-white text-slate-600 hover:border-orange-300'
+                        }`}
+                      >
+                        <span className={`flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
+                          selectedServices.includes(service)
+                            ? 'border-[#F37021] bg-[#F37021]'
+                            : 'border-gray-300 bg-white'
+                        }`}>
+                          {selectedServices.includes(service) && (
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                          )}
+                        </span>
+                        <span>{service}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
                   <textarea rows="4" className="w-full px-6 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-orange-500 transition-all font-medium resize-none" name="mensaje" placeholder="Cuéntenos sobre su producto..."></textarea>
                   <button disabled={formStatus === 'submitting'} className={`w-full py-5 rounded-2xl font-black uppercase tracking-widest text-sm transition-all shadow-xl ${formStatus === 'success' ? 'bg-emerald-500 text-white' : 'bg-slate-900 text-white hover:bg-[#F37021]'}`}>
                     {formStatus === 'idle' && 'Enviar Solicitud'}
@@ -570,7 +601,7 @@ const App = () => {
             <div className="flex gap-12 font-bold text-slate-600">
               <div className="space-y-4">
                 <p className="text-xs uppercase tracking-widest text-slate-400">Puerto Rico</p>
-                <p className="text-sm">78 Municipios <br/> Garantía de Servicio en 24 horas a los 78 municipios</p>
+                <p className="text-sm">Garantía de Servicio en 24 horas a los 78 municipios</p>
               </div>
               <div className="space-y-4">
                 <p className="text-xs uppercase tracking-widest text-slate-400">Social</p>
@@ -580,6 +611,9 @@ const App = () => {
             </div>
           </div>
           <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 pt-12 border-t border-slate-50">© 2025 ADVANCE GROUP. BUILT IN PUERTO RICO.</p>
+        </div>
+            <div className="text-center py-3 border-t border-slate-800 text-slate-500 text-xs">
+          Powered by <span className="text-slate-400">Alfonso Moreno LLC.</span>
         </div>
       </footer>
 
