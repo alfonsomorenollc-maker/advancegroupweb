@@ -71,9 +71,63 @@ const SERVICES = [
 ];
 
 const HERO_SLIDES = [
-  { tag: 'Desarrollamos negocios, construimos marcas', h1: 'Estrategia que', accent: 'vende', h2: 'y logística que', muted: 'cumple.' },
-  { tag: 'Advance Logistics — 24h en toda la isla', h1: 'Distribución que', accent: 'llega', h2: 'a tiempo, todos los', muted: 'días.', photo: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800' },
-  { tag: 'Advance Solutions — Crecimiento de marcas', h1: 'Marcas que', accent: 'crecen', h2: 'con estrategia y', muted: 'datos.', photo: 'https://images.unsplash.com/photo-1542744094-3a31f272c490?auto=format&fit=crop&w=800' },
+  // FOTO 1 — advance-group-distribucion-logistica-entregas-puntuales-puerto-rico.jpg
+  // title_es: Advance Group | Distribución que llega a tiempo todos los días
+  // alt_es: Operación de distribución de Advance Group realizando entregas puntuales para negocios en Puerto Rico
+  // title_en: Advance Group | On-time distribution across Puerto Rico
+  // alt_en: Advance Group distribution operation handling on-time deliveries for businesses across Puerto Rico
+  // keywords_es: Advance Group, distribución, logística, entregas puntuales, entregas a tiempo, entregas diarias, transporte, fulfillment, almacen, almacén, bodega, despacho, reparto, operaciones, cadena de suministro, Puerto Rico, entrega same-day, entrega el mismo día
+  // keywords_en: Advance Group, distribution, logistics, on-time delivery, daily delivery, fulfillment, warehousing, warehouse, storage, dispatch, route delivery, supply chain, last mile, same-day delivery, Puerto Rico logistics
+  {
+    tag: 'Advance Logistics – 24h en toda la isla',
+    h1: 'Distribución que', accent: 'llega', h2: 'a tiempo, todos los', muted: 'días.',
+    fileName: 'advance-group-distribucion-logistica-entregas-puntuales-puerto-rico.jpg',
+    photo: 'https://firebasestorage.googleapis.com/v0/b/advancegroup-web-4391643-961a3.firebasestorage.app/o/landing%2Fadvance-group-distribucion-logistica-entregas-puntuales-puerto-rico.jpg?alt=media&token=f47404af-8051-4a42-b4d8-b51e262b2413',
+    titleEs: 'Advance Group | Distribución que llega a tiempo todos los días',
+    altEs: 'Operación de distribución de Advance Group realizando entregas puntuales para negocios en Puerto Rico',
+    titleEn: 'Advance Group | On-time distribution across Puerto Rico',
+    altEn: 'Advance Group distribution operation handling on-time deliveries for businesses across Puerto Rico',
+    keywordsEs: 'Advance Group, distribución, logística, entregas puntuales, entregas a tiempo, entregas diarias, transporte, fulfillment, almacen, almacén, bodega, despacho, reparto, operaciones, cadena de suministro, Puerto Rico, entrega same-day, entrega el mismo día',
+    keywordsEn: 'Advance Group, distribution, logistics, on-time delivery, daily delivery, fulfillment, warehousing, warehouse, storage, dispatch, route delivery, supply chain, last mile, same-day delivery, Puerto Rico logistics',
+  },
+  // FOTO 2 — advance-group-crecimiento-de-marcas-estrategia-datos-puerto-rico.jpg
+  // title_es: Advance Group | Marcas que crecen con estrategia y datos
+  // alt_es: Equipo de Advance Group analizando datos y estrategia comercial para impulsar el crecimiento de marcas en Puerto Rico
+  // title_en: Advance Group | Brand growth powered by strategy and data
+  // alt_en: Advance Group team using commercial strategy and data insights to drive brand growth in Puerto Rico
+  // keywords_es: Advance Group, crecimiento de marcas, estrategia comercial, estrategia de ventas, análisis de datos, inteligencia comercial, expansion comercial, expansión comercial, desarrollo de mercado, posicionamiento de marca, mercadeo, ventas, marcas, Puerto Rico, business intelligence
+  // keywords_en: Advance Group, brand growth, commercial strategy, sales strategy, data insights, analytics, market development, go-to-market, brand positioning, business intelligence, growth strategy, Puerto Rico market expansion
+  {
+    tag: 'Advance Solutions – Crecimiento de marcas',
+    h1: 'Marcas que', accent: 'crecen', h2: 'con estrategia y', muted: 'datos.',
+    fileName: 'advance-group-crecimiento-de-marcas-estrategia-datos-puerto-rico.jpg',
+    photo: 'https://firebasestorage.googleapis.com/v0/b/advancegroup-web-4391643-961a3.firebasestorage.app/o/landing%2Fadvance-group-crecimiento-de-marcas-estrategia-datos-puerto-rico.jpg?alt=media&token=ad9b415a-d6a9-4a38-8d7a-f9c6f3fa2bc4',
+    titleEs: 'Advance Group | Marcas que crecen con estrategia y datos',
+    altEs: 'Equipo de Advance Group analizando datos y estrategia comercial para impulsar el crecimiento de marcas en Puerto Rico',
+    titleEn: 'Advance Group | Brand growth powered by strategy and data',
+    altEn: 'Advance Group team using commercial strategy and data insights to drive brand growth in Puerto Rico',
+    keywordsEs: 'Advance Group, crecimiento de marcas, estrategia comercial, estrategia de ventas, análisis de datos, inteligencia comercial, expansion comercial, expansión comercial, desarrollo de mercado, posicionamiento de marca, mercadeo, ventas, marcas, Puerto Rico, business intelligence',
+    keywordsEn: 'Advance Group, brand growth, commercial strategy, sales strategy, data insights, analytics, market development, go-to-market, brand positioning, business intelligence, growth strategy, Puerto Rico market expansion',
+  },
+  // FOTO 3 — advance-group-estrategia-comercial-logistica-operacional-puerto-rico.jpg
+  // title_es: Advance Group | Estrategia que vende y logística que cumple
+  // alt_es: Servicios integrados de estrategia comercial y logística operacional de Advance Group para empresas en Puerto Rico
+  // title_en: Advance Group | Commercial strategy that sells, logistics that deliver
+  // alt_en: Integrated commercial strategy and logistics services from Advance Group for companies operating in Puerto Rico
+  // keywords_es: Advance Group, estrategia comercial, logística operacional, ventas, distribución, fulfillment, ejecución operacional, manejo de órdenes, ordenes, servicio, operaciones, expansión comercial, almacén, despacho, Puerto Rico
+  // keywords_en: Advance Group, commercial strategy, logistics execution, sales enablement, fulfillment, distribution, order management, operations, execution, business growth, go-to-market support, Puerto Rico
+  {
+    tag: 'Desarrollamos negocios, construimos marcas',
+    h1: 'Estrategia que', accent: 'vende', h2: 'y logística que', muted: 'cumple.',
+    fileName: 'advance-group-estrategia-comercial-logistica-operacional-puerto-rico.jpg',
+    photo: 'https://firebasestorage.googleapis.com/v0/b/advancegroup-web-4391643-961a3.firebasestorage.app/o/landing%2Fadvance-group-estrategia-comercial-logistica-operacional-puerto-rico.jpg?alt=media&token=0dbf7ae3-aab1-4ea1-a5f6-1dfd41efd2e6',
+    titleEs: 'Advance Group | Estrategia que vende y logística que cumple',
+    altEs: 'Servicios integrados de estrategia comercial y logística operacional de Advance Group para empresas en Puerto Rico',
+    titleEn: 'Advance Group | Commercial strategy that sells, logistics that deliver',
+    altEn: 'Integrated commercial strategy and logistics services from Advance Group for companies operating in Puerto Rico',
+    keywordsEs: 'Advance Group, estrategia comercial, logística operacional, ventas, distribución, fulfillment, ejecución operacional, manejo de órdenes, ordenes, servicio, operaciones, expansión comercial, almacén, despacho, Puerto Rico',
+    keywordsEn: 'Advance Group, commercial strategy, logistics execution, sales enablement, fulfillment, distribution, order management, operations, execution, business growth, go-to-market support, Puerto Rico',
+  },
 ];
 
 const LogoSVG = ({ accentColor = BRAND_COLORS.LOGISTICS_GREY, size = 60 }) => (
@@ -88,6 +142,21 @@ const LogoSVG = ({ accentColor = BRAND_COLORS.LOGISTICS_GREY, size = 60 }) => (
 const VideoPlayer = () => {
   const videoRef = React.useRef(null);
   const containerRef = React.useRef(null);
+
+  // Video metadata (ES/EN)
+  const videoMeta = {
+    fileName: 'advance-group-logistica-distribucion-estrategia-comercial-puerto-rico.mp4',
+    titleEs: 'Advance Group | Estrategia comercial, distribución y logística en Puerto Rico',
+    titleEn: 'Advance Group | Commercial strategy, distribution and logistics in Puerto Rico',
+    descriptionEs: 'Video institucional de Advance Group mostrando su ecosistema de servicios en Puerto Rico, incluyendo distribución, logística, almacén, fulfillment, estrategia comercial, crecimiento de marcas, manejo de órdenes y soporte operacional para empresas.',
+    descriptionEn: 'Corporate brand video for Advance Group showcasing its service ecosystem in Puerto Rico, including distribution, logistics, warehousing, fulfillment, commercial strategy, brand growth, order management and operational support for businesses.',
+    keywordsEs: 'Advance Group, logística, distribución, almacén, almacen, bodega, fulfillment, estrategia comercial, crecimiento de marcas, manejo de órdenes, soporte operacional, entregas, despacho, reparto, Puerto Rico, supply chain, ventas, operaciones',
+    keywordsEn: 'Advance Group, logistics, distribution, warehousing, warehouse, storage, fulfillment, commercial strategy, brand growth, order management, operational support, delivery, dispatch, route delivery, supply chain, Puerto Rico logistics, sales enablement',
+    captionEs: 'Estrategia que vende. Logística que cumple.',
+    captionEn: 'Strategy that sells. Logistics that deliver.',
+  };
+
+  // Auto-play when scrolled into view (IntersectionObserver)
   React.useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -102,16 +171,47 @@ const VideoPlayer = () => {
     if (containerRef.current) observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, []);
+
   return (
-    <div ref={containerRef} className="w-full bg-[#0F172A] flex flex-col items-center justify-center py-24 px-4">
-      <div className="w-20 h-20 rounded-full bg-[#F37021] flex items-center justify-center mb-6">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+    <div ref={containerRef} className="w-full bg-[#0F172A] py-16 px-4">
+      {/* Video metadata (SEO / structured data) */}
+      <div className="sr-only" aria-hidden="true">
+        <span data-video-title-es={videoMeta.titleEs} />
+        <span data-video-title-en={videoMeta.titleEn} />
+        <span data-video-description-es={videoMeta.descriptionEs} />
+        <span data-video-description-en={videoMeta.descriptionEn} />
+        <span data-video-keywords-es={videoMeta.keywordsEs} />
+        <span data-video-keywords-en={videoMeta.keywordsEn} />
+        <span data-video-caption-es={videoMeta.captionEs} />
+        <span data-video-caption-en={videoMeta.captionEn} />
       </div>
-      <p className="text-white text-2xl font-bold mb-2">Video corporativo</p>
-      <p className="text-slate-400 text-sm">Próximamente — sube tu video para activar este player.</p>
+
+      <div className="max-w-5xl mx-auto">
+        {/* Caption */}
+        <p className="text-center text-[#F37021] font-bold text-lg mb-6 tracking-wide">
+          {videoMeta.captionEs}
+        </p>
+
+        {/* Video Player */}
+        <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl"
+             style={{ aspectRatio: '16/9' }}>
+          <video
+            ref={videoRef}
+            src="https://firebasestorage.googleapis.com/v0/b/advancegroup-web-4391643-961a3.firebasestorage.app/o/landing%2Fadvance-group-logistica-distribucion-estrategia-comercial-puerto-rico.m4v?alt=media&token=f23f18c7-1f11-43e7-9103-fe46bc232d4a"
+            title={videoMeta.titleEs}
+            className="w-full h-full object-cover"
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            aria-label={videoMeta.titleEs}
+          />
+        </div>
+      </div>
     </div>
   );
 };
+
 
 const App = () => {
   const [activeSection, setActiveSection] = React.useState('home');
@@ -248,7 +348,7 @@ const App = () => {
               </div>
               <div className="relative">
                 <div className="relative z-10 rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white bg-slate-100 aspect-[4/5] md:aspect-square">
-                  <img src={HERO_SLIDES[heroSlide].photo} alt={HERO_SLIDES[heroSlide].tag} className="w-full h-full object-cover transition-all duration-700" />
+                  <img src={HERO_SLIDES[heroSlide].photo} alt={HERO_SLIDES[heroSlide].altEs} title={HERO_SLIDES[heroSlide].titleEs} className="w-full h-full object-cover transition-all duration-700" />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
                   <div className="absolute bottom-10 left-10 right-10 text-white">
                     <div className="flex items-center gap-4 mb-2">
