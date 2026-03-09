@@ -262,7 +262,12 @@ const App = () => {
             </div>
           </section>
 
-          <section className="py-24 bg-slate-50">
+          {/* VIDEO SECTION */}
+      <section className="py-0 bg-black flex items-center justify-center">
+        <VideoPlayer />
+      </section>
+
+      <section className="py-24 bg-slate-50">
             <div className="max-w-7xl mx-auto px-4">
               <div className="text-center mb-16 space-y-4">
                 <h2 className="text-4xl font-black text-slate-900">Un Soluciones Sin Límites</h2>
@@ -383,11 +388,6 @@ const App = () => {
 
 
       )}
-
-      {/* VIDEO SECTION */}
-      <section className="py-0 bg-black flex items-center justify-center">
-        <VideoPlayer />
-      </section>
 
       {/* CONTACT */}
       {activeSection === 'contact' && (
