@@ -380,7 +380,14 @@ const App = () => {
             </div>
           </div>
         </section>
+
+
       )}
+
+      {/* VIDEO SECTION */}
+      <section className="py-0 bg-black flex items-center justify-center">
+        <VideoPlayer />
+      </section>
 
       {/* CONTACT */}
       {activeSection === 'contact' && (
