@@ -14,7 +14,8 @@
     "slides": [
       { "tag": "Advance Logistics – 24h island-wide", "h1": "Distribution that", "accent": "arrives", "h2": "on time, every", "muted": "day." },
       { "tag": "Advance Solutions – Brand growth", "h1": "Brands that", "accent": "grow", "h2": "with strategy and", "muted": "data." },
-      { "tag": "We develop businesses, build brands", "h1": "Strategy that", "accent": "sells", "h2": "and logistics that", "muted": "deliver." }
+      { "tag": "We develop businesses, build brands", "h1": "Strategy that", "accent": "sells", "h2": "and logistics that", "muted": "deliver." },
+      { "tag": "Advance Depot – Warehousing & fulfillment in PR", "h1": "Inventory", "accent": "secure", "h2": "and ready to", "muted": "ship." }
     ]
   },
   "businessLines": {
@@ -24,7 +25,7 @@
     },
     "depot": {
       "name": "Advance Depot",
-      "description": "Physical solutions hub for packaging, warehousing and merchandise handling."
+      "description": "Puerto Rico's warehousing and fulfillment network: three Caguas facilities with refrigerated coverage, pick & pack and real-time inventory management — ready to ship in 24 hours."
     },
     "solutions": {
       "name": "Advance Solutions",

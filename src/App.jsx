@@ -105,6 +105,17 @@ const HERO_SLIDES = [
     keywordsEn: 'Advance Group, commercial strategy, logistics execution, sales enablement, fulfillment, distribution, order management, operations, execution, business growth, go-to-market support, Puerto Rico',
     slideIndex: 2,
   },
+  {
+    fileName: 'advance-group-depot-almacenaje-fulfillment-bodega-puerto-rico.jpg',
+    photo: 'https://firebasestorage.googleapis.com/v0/b/advancegroup-web-4391643-961a3.firebasestorage.app/o/landing%2Fadvance-group-distribucion-logistica-entregas-puntuales-puerto-rico.jpg?alt=media&token=f47404af-8051-4a42-b4d8-b51e262b2413',
+    titleEs: 'Advance Group | Advance Depot — Almacenaje y fulfillment en Puerto Rico',
+    altEs: 'Advance Depot: centro de almacenaje, pick & pack y fulfillment de Advance Group en Caguas, Puerto Rico',
+    titleEn: 'Advance Group | Advance Depot — Warehousing and fulfillment in Puerto Rico',
+    altEn: 'Advance Depot: Advance Group warehousing, pick & pack and fulfillment center in Caguas, Puerto Rico',
+    keywordsEs: 'Advance Depot, almacenaje, bodega, fulfillment, picking, packing, inventario, almacén refrigerado, 3PL, gestión de inventario, Caguas, Puerto Rico, distribución, despacho',
+    keywordsEn: 'Advance Depot, warehousing, warehouse, fulfillment, picking, packing, inventory management, refrigerated storage, 3PL, Caguas, Puerto Rico, distribution',
+    slideIndex: 3,
+  },
 ];
 
 const LogoSVG = ({ accentColor = BRAND_COLORS.LOGISTICS_GREY, size = 60 }) => (

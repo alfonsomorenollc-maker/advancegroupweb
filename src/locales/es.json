@@ -14,7 +14,8 @@
     "slides": [
       { "tag": "Advance Logistics – 24h en toda la isla", "h1": "Distribución que", "accent": "llega", "h2": "a tiempo, todos los", "muted": "días." },
       { "tag": "Advance Solutions – Crecimiento de marcas", "h1": "Marcas que", "accent": "crecen", "h2": "con estrategia y", "muted": "datos." },
-      { "tag": "Desarrollamos negocios, construimos marcas", "h1": "Estrategia que", "accent": "vende", "h2": "y logística que", "muted": "cumple." }
+      { "tag": "Desarrollamos negocios, construimos marcas", "h1": "Estrategia que", "accent": "vende", "h2": "y logística que", "muted": "cumple." },
+      { "tag": "Advance Depot – Almacenaje y fulfillment en PR", "h1": "Inventario", "accent": "seguro", "h2": "y listo para", "muted": "despacho." }
     ]
   },
   "businessLines": {
@@ -24,7 +25,7 @@
     },
     "depot": {
       "name": "Advance Depot",
-      "description": "Centro de soluciones físicas para empaque, almacenamiento y manejo de mercancía."
+      "description": "Red de almacenaje y fulfillment en Puerto Rico: tres bodegas en Caguas con cobertura refrigerada, pick & pack y gestión de inventario en tiempo real — listo para despacho en 24 horas."
     },
     "solutions": {
       "name": "Advance Solutions",
