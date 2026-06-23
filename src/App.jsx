@@ -1,11 +1,11 @@
 import React from 'react';
 import { db } from './firebase.js';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { 
-  Truck, 
-  Search, 
-  ArrowRight, 
-  CheckCircle2, 
+import {
+  Truck,
+  Search,
+  ArrowRight,
+  CheckCircle2,
   ChevronRight,
   Phone,
   Zap,
@@ -18,8 +18,13 @@ import {
   Store
 } from 'lucide-react';
 
+// ─── CONSENTIMIENTO SMS — TCPA ────────────────────────────────────────────
+// Versionar este texto: cada cambio = nuevo identificador.
+// El backend almacena la versión para auditoría.
+const SMS_CONSENT_TEXT_V1 = "Autorizo a Advance Group a contactarme por SMS sobre mi solicitud. Pueden aplicar tarifas de mensajes y datos. Puedo darme de baja respondiendo STOP en cualquier momento.";
+
 const BRAND_COLORS = {
-  ORANGE: '#F37021', 
+  ORANGE: '#F37021',
   LOGISTICS_GREY: '#939598',
   DEPOT_NAVY: '#1A237E',
   SOLUTIONS_TEAL: '#4DB6AC'
@@ -71,13 +76,6 @@ const SERVICES = [
 ];
 
 const HERO_SLIDES = [
-  // FOTO 1 — advance-group-distribucion-logistica-entregas-puntuales-puerto-rico.jpg
-  // title_es: Advance Group | Distribución que llega a tiempo todos los días
-  // alt_es: Operación de distribución de Advance Group realizando entregas puntuales para negocios en Puerto Rico
-  // title_en: Advance Group | On-time distribution across Puerto Rico
-  // alt_en: Advance Group distribution operation handling on-time deliveries for businesses across Puerto Rico
-  // keywords_es: Advance Group, distribución, logística, entregas puntuales, entregas a tiempo, entregas diarias, transporte, fulfillment, almacen, almacén, bodega, despacho, reparto, operaciones, cadena de suministro, Puerto Rico, entrega same-day, entrega el mismo día
-  // keywords_en: Advance Group, distribution, logistics, on-time delivery, daily delivery, fulfillment, warehousing, warehouse, storage, dispatch, route delivery, supply chain, last mile, same-day delivery, Puerto Rico logistics
   {
     tag: 'Advance Logistics – 24h en toda la isla',
     h1: 'Distribución que', accent: 'llega', h2: 'a tiempo, todos los', muted: 'días.',
@@ -90,13 +88,6 @@ const HERO_SLIDES = [
     keywordsEs: 'Advance Group, distribución, logística, entregas puntuales, entregas a tiempo, entregas diarias, transporte, fulfillment, almacen, almacén, bodega, despacho, reparto, operaciones, cadena de suministro, Puerto Rico, entrega same-day, entrega el mismo día',
     keywordsEn: 'Advance Group, distribution, logistics, on-time delivery, daily delivery, fulfillment, warehousing, warehouse, storage, dispatch, route delivery, supply chain, last mile, same-day delivery, Puerto Rico logistics',
   },
-  // FOTO 2 — advance-group-crecimiento-de-marcas-estrategia-datos-puerto-rico.jpg
-  // title_es: Advance Group | Marcas que crecen con estrategia y datos
-  // alt_es: Equipo de Advance Group analizando datos y estrategia comercial para impulsar el crecimiento de marcas en Puerto Rico
-  // title_en: Advance Group | Brand growth powered by strategy and data
-  // alt_en: Advance Group team using commercial strategy and data insights to drive brand growth in Puerto Rico
-  // keywords_es: Advance Group, crecimiento de marcas, estrategia comercial, estrategia de ventas, análisis de datos, inteligencia comercial, expansion comercial, expansión comercial, desarrollo de mercado, posicionamiento de marca, mercadeo, ventas, marcas, Puerto Rico, business intelligence
-  // keywords_en: Advance Group, brand growth, commercial strategy, sales strategy, data insights, analytics, market development, go-to-market, brand positioning, business intelligence, growth strategy, Puerto Rico market expansion
   {
     tag: 'Advance Solutions – Crecimiento de marcas',
     h1: 'Marcas que', accent: 'crecen', h2: 'con estrategia y', muted: 'datos.',
@@ -109,13 +100,6 @@ const HERO_SLIDES = [
     keywordsEs: 'Advance Group, crecimiento de marcas, estrategia comercial, estrategia de ventas, análisis de datos, inteligencia comercial, expansion comercial, expansión comercial, desarrollo de mercado, posicionamiento de marca, mercadeo, ventas, marcas, Puerto Rico, business intelligence',
     keywordsEn: 'Advance Group, brand growth, commercial strategy, sales strategy, data insights, analytics, market development, go-to-market, brand positioning, business intelligence, growth strategy, Puerto Rico market expansion',
   },
-  // FOTO 3 — advance-group-estrategia-comercial-logistica-operacional-puerto-rico.jpg
-  // title_es: Advance Group | Estrategia que vende y logística que cumple
-  // alt_es: Servicios integrados de estrategia comercial y logística operacional de Advance Group para empresas en Puerto Rico
-  // title_en: Advance Group | Commercial strategy that sells, logistics that deliver
-  // alt_en: Integrated commercial strategy and logistics services from Advance Group for companies operating in Puerto Rico
-  // keywords_es: Advance Group, estrategia comercial, logística operacional, ventas, distribución, fulfillment, ejecución operacional, manejo de órdenes, ordenes, servicio, operaciones, expansión comercial, almacén, despacho, Puerto Rico
-  // keywords_en: Advance Group, commercial strategy, logistics execution, sales enablement, fulfillment, distribution, order management, operations, execution, business growth, go-to-market support, Puerto Rico
   {
     tag: 'Desarrollamos negocios, construimos marcas',
     h1: 'Estrategia que', accent: 'vende', h2: 'y logística que', muted: 'cumple.',
@@ -138,12 +122,10 @@ const LogoSVG = ({ accentColor = BRAND_COLORS.LOGISTICS_GREY, size = 60 }) => (
   </svg>
 );
 
-
 const VideoPlayer = () => {
   const videoRef = React.useRef(null);
   const containerRef = React.useRef(null);
 
-  // Video metadata (ES/EN)
   const videoMeta = {
     fileName: 'advance-group-logistica-distribucion-estrategia-comercial-puerto-rico.mp4',
     titleEs: 'Advance Group | Estrategia comercial, distribución y logística en Puerto Rico',
@@ -156,7 +138,6 @@ const VideoPlayer = () => {
     captionEn: 'Strategy that sells. Logistics that deliver.',
   };
 
-  // Auto-play when scrolled into view (IntersectionObserver)
   React.useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -175,7 +156,6 @@ const VideoPlayer = () => {
 
   return (
     <div ref={containerRef} className="w-full bg-[#0F172A] py-16 px-4">
-      {/* Video metadata (SEO / structured data) */}
       <div className="sr-only" aria-hidden="true">
         <span data-video-title-es={videoMeta.titleEs} />
         <span data-video-title-en={videoMeta.titleEn} />
@@ -186,23 +166,15 @@ const VideoPlayer = () => {
         <span data-video-caption-es={videoMeta.captionEs} />
         <span data-video-caption-en={videoMeta.captionEn} />
       </div>
-
       <div className="max-w-5xl mx-auto">
-
-        {/* Video Player */}
-        <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl"
-             style={{ aspectRatio: '16/9' }}>
+        <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl" style={{ aspectRatio: '16/9' }}>
           <video
             ref={videoRef}
             src="https://firebasestorage.googleapis.com/v0/b/advancegroup-web-4391643-961a3.firebasestorage.app/o/landing%2Fadvance-group-logistica-distribucion-estrategia-comercial-puerto-rico.m4v?alt=media&token=f23f18c7-1f11-43e7-9103-fe46bc232d4a"
             title={videoMeta.titleEs}
             className="w-full h-full object-cover" muted={isMuted}
-            loop
-            playsInline
-            preload="metadata"
-            aria-label={videoMeta.titleEs}
+            loop playsInline preload="metadata" aria-label={videoMeta.titleEs}
           />
-          {/* Unmute/Mute button */}
           <button
             onClick={() => { setIsMuted(m => !m); if(videoRef.current) videoRef.current.muted = !isMuted; }}
             className="absolute bottom-4 right-4 bg-black/60 hover:bg-[#F37021] text-white rounded-full p-2 transition-all duration-200 z-10"
@@ -220,15 +192,43 @@ const VideoPlayer = () => {
   );
 };
 
+// ─── PR Municipios (78) para el selector del formulario ──────────────────
+const PR_MUNICIPIOS = [
+  'Adjuntas','Aguada','Aguadilla','Aguas Buenas','Aibonito','Añasco','Arecibo','Arroyo',
+  'Barceloneta','Barranquitas','Bayamón','Cabo Rojo','Caguas','Camuy','Canóvanas',
+  'Carolina','Cataño','Cayey','Ceiba','Ciales','Cidra','Coamo','Comerío','Corozal',
+  'Culebra','Dorado','Fajardo','Florida','Guánica','Guayama','Guayanilla','Guaynabo',
+  'Gurabo','Hatillo','Hormigueros','Humacao','Isabela','Jayuya','Juana Díaz','Juncos',
+  'Lajas','Lares','Las Marías','Las Piedras','Loíza','Luquillo','Manatí','Maricao',
+  'Maunabo','Mayagüez','Moca','Morovis','Naguabo','Naranjito','Orocovis','Patillas',
+  'Peñuelas','Ponce','Quebradillas','Rincón','Río Grande','Sabana Grande','Salinas',
+  'San Germán','San Juan','San Lorenzo','San Sebastián','Santa Isabel','Toa Alta',
+  'Toa Baja','Trujillo Alto','Utuado','Vega Alta','Vega Baja','Vieques','Villalba',
+  'Yabucoa','Yauco'
+];
+
+const VOLUME_OPTIONS = [
+  'Más de 500 unidades/semana',
+  '201-500 unidades/semana',
+  '51-200 unidades/semana',
+  '1-50 unidades/semana',
+  'No sé aún',
+];
+
+const FREQUENCY_OPTIONS = ['Recurrente', 'Mensual', 'Puntual'];
 
 const App = () => {
   const [activeSection, setActiveSection] = React.useState('home');
   const [filter, setFilter] = React.useState('all');
   const [searchQuery, setSearchQuery] = React.useState('');
   const [selectedService, setSelectedService] = React.useState(null);
-  const [formStatus, setFormStatus] = React.useState('idle');
+  const [formStatus, setFormStatus] = React.useState('idle'); // idle|submitting|success|error
   const [selectedServices, setSelectedServices] = React.useState([]);
   const [heroSlide, setHeroSlide] = React.useState(0);
+
+  // Consentimiento
+  const [termsAccepted, setTermsAccepted] = React.useState(false);
+  const [smsConsent, setSmsConsent] = React.useState(false);
 
   React.useEffect(() => {
     const t = setInterval(() => setHeroSlide(p => (p + 1) % HERO_SLIDES.length), 4500);
@@ -238,7 +238,7 @@ const App = () => {
   const filteredServices = React.useMemo(() => {
     return SERVICES.filter(s => {
       const matchesFilter = filter === 'all' || s.line === filter;
-      const matchesSearch = s.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      const matchesSearch = s.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                             s.description.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesFilter && matchesSearch;
     });
@@ -252,28 +252,66 @@ const App = () => {
 
   const handleContactSubmit = async (e) => {
     e.preventDefault();
+    if (!termsAccepted) return; // bloqueo reforzado en UI
     setFormStatus('submitting');
+
     const fd = new FormData(e.target);
+    const now = new Date();
+
+    // IP best-effort — para auditoría TCPA
+    let consentIp = null;
+    try {
+      const ipRes = await fetch('https://api.ipify.org?format=json');
+      const ipJson = await ipRes.json();
+      consentIp = ipJson.ip || null;
+    } catch (_) { /* no-op */ }
+
     try {
       await addDoc(collection(db, 'orgs', 'org1', 'leads'), {
-        name: (fd.get('nombre') || '').trim() || (fd.get('empresa') || '').trim(),
-        email: (fd.get('email') || '').trim(),
-        company: (fd.get('empresa') || '').trim() || null,
-        message: (fd.get('mensaje') || '').trim(),
-        services: selectedServices,
-        source: 'WEB',
-        status: 'NUEVO',
+        // Datos de contacto
+        name:      (fd.get('nombre') || '').trim() || (fd.get('empresa') || '').trim(),
+        email:     (fd.get('email')  || '').trim() || null,
+        phone:     (fd.get('telefono') || '').trim() || null,
+        company:   (fd.get('empresa') || '').trim() || null,
+        municipio: (fd.get('municipio') || '').trim() || null,
+
+        // Datos de negocio (alimentan el scoring)
+        services:  selectedServices,
+        volume:    (fd.get('volumen') || '').trim() || null,
+        frequency: (fd.get('frecuencia') || '').trim() || null,
+        message:   (fd.get('mensaje') || '').trim() || null,
+
+        // Consentimiento T&C
+        termsAccepted:   true,
+        termsAcceptedAt: serverTimestamp(),
+
+        // Consentimiento SMS (TCPA)
+        smsConsent:           smsConsent,
+        smsConsentAt:         smsConsent ? serverTimestamp() : null,
+        smsConsentSource:     'web_contact_form',
+        smsConsentTextVersion: 'V1',
+        consentIp,
+
+        // Metadata del lead
+        source:   'WEB',
+        status:   'NUEVO',
         priority: 'Medium',
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
+        optedOut: false,
+
+        createdAt:  serverTimestamp(),
+        updatedAt:  serverTimestamp(),
       });
+
       setFormStatus('success');
       e.target.reset();
       setSelectedServices([]);
-      setTimeout(() => setFormStatus('idle'), 3000);
-    } catch(err) {
+      setTermsAccepted(false);
+      setSmsConsent(false);
+      setTimeout(() => setFormStatus('idle'), 4000);
+    } catch (err) {
       console.error('Error submitting lead:', err);
-      setFormStatus('idle');
+      setFormStatus('error');
+      setTimeout(() => setFormStatus('idle'), 3000);
     }
   };
 
@@ -334,26 +372,26 @@ const App = () => {
                   <div className="flex items-center gap-4 px-6 py-4">
                     <div className="flex -space-x-3">
                       {[
-                  { name: 'AxCare', favicon: 'https://www.axcare.com/favicon.ico', desc: 'Axis provee servicios de salud y equipos médicos directamente al hogar.' },
-                  { name: 'TRUST Beauty', favicon: 'https://static.cdninstagram.com/rsrc.php/v3/yI/r/VsNE-OHk_8a.png', desc: 'Trust Beauty, marca líder en los salones de belleza con en productos especializados para el cuidado del cabello.' },
-                  { name: 'Prodigy', favicon: 'https://www.prodigymeter.com/favicon.ico', desc: 'Compañía especializada en el desarrollo de sistemas de monitoreo de glucosa en sangre diseñados para ser accesibles, especialmente para personas con discapacidades visuales.' },
-                ].map((client) => (
-                  <div key={client.name} className="relative group">
-                    <div className="w-10 h-10 rounded-full bg-slate-200 border-2 border-white overflow-hidden cursor-pointer hover:scale-110 transition-transform flex items-center justify-center">
-                      <img src={client.favicon} alt={client.name} className="w-8 h-8 object-contain rounded-full"
-                        onError={(e) => { e.currentTarget.style.display='none'; e.currentTarget.parentElement.innerHTML='<span style="font-size:14px;font-weight:700;color:#F37021">'+client.name[0]+'</span>'; }}
-                      />
-                    </div>
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-52 bg-white rounded-xl shadow-xl border border-slate-100 p-3 opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-50">
-                      <div className="flex items-center gap-2 mb-1">
-                        <img src={client.favicon} alt={client.name} className="w-5 h-5 rounded" />
-                        <span className="font-bold text-slate-900 text-sm">{client.name}</span>
-                      </div>
-                      <p className="text-xs text-slate-500 leading-snug">{client.desc}</p>
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-white"></div>
-                    </div>
-                  </div>
-                ))}
+                        { name: 'AxCare', favicon: 'https://www.axcare.com/favicon.ico', desc: 'Axis provee servicios de salud y equipos médicos directamente al hogar.' },
+                        { name: 'TRUST Beauty', favicon: 'https://static.cdninstagram.com/rsrc.php/v3/yI/r/VsNE-OHk_8a.png', desc: 'Trust Beauty, marca líder en los salones de belleza con en productos especializados para el cuidado del cabello.' },
+                        { name: 'Prodigy', favicon: 'https://www.prodigymeter.com/favicon.ico', desc: 'Compañía especializada en el desarrollo de sistemas de monitoreo de glucosa en sangre diseñados para ser accesibles, especialmente para personas con discapacidades visuales.' },
+                      ].map((client) => (
+                        <div key={client.name} className="relative group">
+                          <div className="w-10 h-10 rounded-full bg-slate-200 border-2 border-white overflow-hidden cursor-pointer hover:scale-110 transition-transform flex items-center justify-center">
+                            <img src={client.favicon} alt={client.name} className="w-8 h-8 object-contain rounded-full"
+                              onError={(e) => { e.currentTarget.style.display='none'; e.currentTarget.parentElement.innerHTML='<span style="font-size:14px;font-weight:700;color:#F37021">'+client.name[0]+'</span>'; }}
+                            />
+                          </div>
+                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-52 bg-white rounded-xl shadow-xl border border-slate-100 p-3 opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-50">
+                            <div className="flex items-center gap-2 mb-1">
+                              <img src={client.favicon} alt={client.name} className="w-5 h-5 rounded" />
+                              <span className="font-bold text-slate-900 text-sm">{client.name}</span>
+                            </div>
+                            <p className="text-xs text-slate-500 leading-snug">{client.desc}</p>
+                            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-white"></div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                     <p className="text-sm font-bold text-slate-400">Trusted by top local brands</p>
                   </div>
@@ -376,11 +414,11 @@ const App = () => {
           </section>
 
           {/* VIDEO SECTION */}
-      <section className="py-0 bg-black flex items-center justify-center">
-        <VideoPlayer />
-      </section>
+          <section className="py-0 bg-black flex items-center justify-center">
+            <VideoPlayer />
+          </section>
 
-      <section className="py-24 bg-slate-50">
+          <section className="py-24 bg-slate-50">
             <div className="max-w-7xl mx-auto px-4">
               <div className="text-center mb-16 space-y-4">
                 <h2 className="text-4xl font-black text-slate-900">Un Soluciones Sin Límites</h2>
@@ -498,15 +536,13 @@ const App = () => {
             </div>
           </div>
         </section>
-
-
       )}
 
       {/* CONTACT */}
       {activeSection === 'contact' && (
         <section className="pt-32 pb-24 px-4 bg-slate-900 text-white min-h-screen">
           <div className="max-w-7xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-24 items-center">
+            <div className="grid md:grid-cols-2 gap-24 items-start">
               <div className="space-y-12">
                 <div className="space-y-6">
                   <h2 className="text-6xl font-black leading-none tracking-tight">Hagamos crecer <br/><span className="text-[#F37021]">su marca.</span></h2>
@@ -526,58 +562,145 @@ const App = () => {
                     <iframe
                       title="Advance Group PR"
                       src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d941.9258085!2d-66.044476!3d18.285087!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8c03687b9b9b9b9b%3A0x1234567890abcdef!2sAdvance+Group!5e0!3m2!1ses!2spr!4v1709999999999!5m2!1ses!2spr"
-                      width="100%"
-                      height="100%"
-                      style={{border: 0}}
-                      allowFullScreen
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
+                      width="100%" height="100%" style={{border: 0}}
+                      allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"
                     />
                   </div>
                 </div>
               </div>
+
+              {/* FORMULARIO EXTENDIDO */}
               <div className="bg-white rounded-[3rem] p-10 text-slate-900 shadow-2xl">
-                <form className="space-y-6" onSubmit={handleContactSubmit}>
-                  <h3 className="text-2xl font-black mb-6">Solicitud de Alianza</h3>
-                  <input required className="w-full px-6 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-orange-500 transition-all font-medium" name="nombre" placeholder="Su nombre" />
-                  <input required className="w-full px-6 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-orange-500 transition-all font-medium" name="empresa" placeholder="Nombre de su Empresa" />
-                  <input required type="email" className="w-full px-6 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-orange-500 transition-all font-medium" name="email" placeholder="Email corporativo" />
-                  <div>
-                  <p className="text-sm font-semibold text-slate-600 mb-3">Servicio de interés <span className="text-orange-500">*</span></p>
-                  <div className="grid grid-cols-2 gap-2">
-                    {['Distribución','Logística & Almacén','Fulfillment','Estrategia Comercial','Crecimiento de Marcas','Manejo de Órdenes','Soporte Operacional'].map(service => (
-                      <button
-                        key={service}
-                        type="button"
-                        onClick={() => toggleService(service)}
-                        className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-all text-sm text-left ${
-                          selectedServices.includes(service)
-                            ? 'border-[#F37021] bg-orange-50 text-[#F37021] font-semibold'
-                            : 'border-gray-200 bg-white text-slate-600 hover:border-orange-300'
-                        }`}
-                      >
-                        <span className={`flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
-                          selectedServices.includes(service)
-                            ? 'border-[#F37021] bg-[#F37021]'
-                            : 'border-gray-300 bg-white'
-                        }`}>
-                          {selectedServices.includes(service) && (
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                              <polyline points="20 6 9 17 4 12"/>
-                            </svg>
-                          )}
-                        </span>
-                        <span>{service}</span>
-                      </button>
-                    ))}
+                <form className="space-y-5" onSubmit={handleContactSubmit}>
+                  <h3 className="text-2xl font-black mb-1">Solicitud de Alianza</h3>
+                  <p className="text-xs text-slate-400 mb-4">Todos los campos marcados con <span className="text-orange-500">*</span> son obligatorios.</p>
+
+                  {/* Nombre */}
+                  <input required className="w-full px-5 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all font-medium text-sm" name="nombre" placeholder="Su nombre completo *" />
+
+                  {/* Empresa */}
+                  <input required className="w-full px-5 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all font-medium text-sm" name="empresa" placeholder="Nombre de su Empresa *" />
+
+                  {/* Email + Teléfono */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <input required type="email" className="w-full px-5 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all font-medium text-sm" name="email" placeholder="Email *" />
+                    <input required type="tel" className="w-full px-5 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all font-medium text-sm" name="telefono" placeholder="Teléfono *" />
                   </div>
-                </div>
-                  <textarea rows="4" className="w-full px-6 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-orange-500 transition-all font-medium resize-none" name="mensaje" placeholder="Cuéntenos sobre su producto..."></textarea>
-                  <button disabled={formStatus === 'submitting'} className={`w-full py-5 rounded-2xl font-black uppercase tracking-widest text-sm transition-all shadow-xl ${formStatus === 'success' ? 'bg-emerald-500 text-white' : 'bg-slate-900 text-white hover:bg-[#F37021]'}`}>
-                    {formStatus === 'idle' && 'Enviar Solicitud'}
+
+                  {/* Municipio */}
+                  <select name="municipio" className="w-full px-5 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all font-medium text-sm text-slate-600">
+                    <option value="">Municipio (opcional)</option>
+                    {PR_MUNICIPIOS.map(m => <option key={m} value={m}>{m}</option>)}
+                  </select>
+
+                  {/* Servicio de interés */}
+                  <div>
+                    <p className="text-sm font-semibold text-slate-600 mb-3">Servicio de interés <span className="text-orange-500">*</span></p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {['Distribución','Logística & Almacén','Fulfillment','Estrategia Comercial','Crecimiento de Marcas','Manejo de Órdenes','Soporte Operacional'].map(service => (
+                        <button
+                          key={service} type="button" onClick={() => toggleService(service)}
+                          className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-all text-sm text-left ${
+                            selectedServices.includes(service)
+                              ? 'border-[#F37021] bg-orange-50 text-[#F37021] font-semibold'
+                              : 'border-gray-200 bg-white text-slate-600 hover:border-orange-300'
+                          }`}
+                        >
+                          <span className={`flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${selectedServices.includes(service) ? 'border-[#F37021] bg-[#F37021]' : 'border-gray-300 bg-white'}`}>
+                            {selectedServices.includes(service) && (
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            )}
+                          </span>
+                          <span>{service}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Volumen + Frecuencia */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs font-semibold text-slate-500 mb-1.5 block">Volumen estimado</label>
+                      <select name="volumen" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all text-sm text-slate-600">
+                        <option value="">Seleccionar...</option>
+                        {VOLUME_OPTIONS.map(v => <option key={v} value={v}>{v}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-slate-500 mb-1.5 block">Frecuencia del servicio</label>
+                      <select name="frecuencia" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all text-sm text-slate-600">
+                        <option value="">Seleccionar...</option>
+                        {FREQUENCY_OPTIONS.map(f => <option key={f} value={f}>{f}</option>)}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Mensaje */}
+                  <textarea rows="3" className="w-full px-5 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all font-medium text-sm resize-none" name="mensaje" placeholder="Cuéntenos sobre su producto o necesidad..."></textarea>
+
+                  {/* ── CONSENTIMIENTOS (TCPA) ─────────────────────────── */}
+                  <div className="space-y-3 pt-2 border-t border-slate-100">
+                    {/* T&C — OBLIGATORIO */}
+                    <label className={`flex items-start gap-3 cursor-pointer p-3 rounded-xl border transition-all ${termsAccepted ? 'border-orange-200 bg-orange-50' : 'border-slate-200 bg-white hover:border-orange-200'}`}>
+                      <span
+                        onClick={() => setTermsAccepted(v => !v)}
+                        className={`flex-shrink-0 mt-0.5 w-5 h-5 rounded border-2 flex items-center justify-center transition-all cursor-pointer ${termsAccepted ? 'border-[#F37021] bg-[#F37021]' : 'border-gray-300 bg-white'}`}
+                      >
+                        {termsAccepted && (
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        )}
+                      </span>
+                      <span className="text-xs text-slate-600 leading-relaxed">
+                        He leído y acepto los{' '}
+                        <a href="/terminos" target="_blank" rel="noopener noreferrer" className="text-[#F37021] font-bold underline" onClick={e => e.stopPropagation()}>
+                          Términos de Servicio
+                        </a>{' '}
+                        y la{' '}
+                        <a href="/privacidad" target="_blank" rel="noopener noreferrer" className="text-[#F37021] font-bold underline" onClick={e => e.stopPropagation()}>
+                          Política de Privacidad
+                        </a>
+                        . <span className="text-orange-500 font-bold">*</span>
+                      </span>
+                    </label>
+
+                    {/* SMS — OPCIONAL / SIN PREMARCAR */}
+                    <label className={`flex items-start gap-3 cursor-pointer p-3 rounded-xl border transition-all ${smsConsent ? 'border-green-200 bg-green-50' : 'border-slate-200 bg-slate-50 hover:border-green-200'}`}>
+                      <span
+                        onClick={() => setSmsConsent(v => !v)}
+                        className={`flex-shrink-0 mt-0.5 w-5 h-5 rounded border-2 flex items-center justify-center transition-all cursor-pointer ${smsConsent ? 'border-green-600 bg-green-600' : 'border-gray-300 bg-white'}`}
+                      >
+                        {smsConsent && (
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        )}
+                      </span>
+                      <span className="text-xs text-slate-500 leading-relaxed">
+                        {SMS_CONSENT_TEXT_V1}{' '}
+                        <span className="text-slate-400 italic">(Opcional)</span>
+                      </span>
+                    </label>
+                  </div>
+
+                  {/* Botón de envío */}
+                  <button
+                    type="submit"
+                    disabled={formStatus === 'submitting' || !termsAccepted || selectedServices.length === 0}
+                    className={`w-full py-4 rounded-2xl font-black uppercase tracking-widest text-sm transition-all shadow-xl disabled:opacity-50 disabled:cursor-not-allowed ${
+                      formStatus === 'success' ? 'bg-emerald-500 text-white' :
+                      formStatus === 'error'   ? 'bg-red-500 text-white' :
+                      'bg-slate-900 text-white hover:bg-[#F37021]'
+                    }`}
+                  >
+                    {formStatus === 'idle'       && 'Enviar Solicitud'}
                     {formStatus === 'submitting' && 'Procesando...'}
-                    {formStatus === 'success' && '¡Solicitud Enviada!'}
+                    {formStatus === 'success'    && '¡Solicitud Enviada! 🎉'}
+                    {formStatus === 'error'      && 'Error — Intente de nuevo'}
                   </button>
+
+                  {!termsAccepted && (
+                    <p className="text-center text-xs text-red-500 font-medium">
+                      Debes aceptar los Términos antes de enviar.
+                    </p>
+                  )}
                 </form>
               </div>
             </div>
@@ -610,7 +733,7 @@ const App = () => {
           </div>
           <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 pt-12 border-t border-slate-50">© 2025 ADVANCE GROUP. BUILT IN PUERTO RICO.</p>
         </div>
-            <div className="text-center py-3 border-t border-slate-800 text-slate-500 text-xs">
+        <div className="text-center py-3 border-t border-slate-800 text-slate-500 text-xs">
           Powered by <span className="text-slate-400">Alfonso Moreno LLC.</span>
         </div>
       </footer>
