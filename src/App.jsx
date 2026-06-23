@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { db } from './firebase.js';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import {
@@ -21,6 +22,7 @@ import {
 // ─── CONSENTIMIENTO SMS — TCPA ────────────────────────────────────────────
 // Versionar este texto: cada cambio = nuevo identificador.
 // El backend almacena la versión para auditoría.
+// Mantenido para compatibilidad con versiones previas; el render usa t('contact.smsConsent')
 const SMS_CONSENT_TEXT_V1 = "Autorizo a Advance Group a contactarme por SMS sobre mi solicitud. Pueden aplicar tarifas de mensajes y datos. Puedo darme de baja respondiendo STOP en cualquier momento.";
 
 const BRAND_COLORS = {
@@ -33,38 +35,32 @@ const BRAND_COLORS = {
 const BUSINESS_LINES = {
   LOGISTICS: {
     id: 'logistics',
-    name: 'Advance Logistics',
     color: 'text-[#939598]',
     accent: '#939598',
     bg: 'bg-slate-50',
     border: 'border-slate-200',
     icon: Truck,
-    description: 'Entrega especializada en toda la isla con promesa de entrega en menos de 24 horas, incluyendo Vieques y Culebra.'
   },
   DEPOT: {
     id: 'depot',
-    name: 'Advance Depot',
     color: 'text-[#1A237E]',
     accent: '#1A237E',
     bg: 'bg-indigo-50',
     border: 'border-indigo-100',
     icon: Box,
-    description: 'Centro de soluciones físicas para empaque, almacenamiento y manejo de mercancía.'
   },
   SOLUTIONS: {
     id: 'solutions',
-    name: 'Advance Solutions',
     color: 'text-[#4DB6AC]',
     accent: '#4DB6AC',
     bg: 'bg-teal-50',
     border: 'border-teal-100',
     icon: TrendingUp,
-    description: 'Estrategia comercial, venta, distribución y crecimiento de marcas en múltiples industrias.'
   }
 };
 
 const SERVICES = [
-  { id: 's1', line: 'logistics', title: 'Entrega Especializada 24h', description: 'Distribución en tiempo récord a cualquier punto de la isla, garantizando Vieques y Culebra.', tags: ['entrega rápida', 'isla completa', '24 horas'], related: ['s4', 's7', 's10'] },
+  { id: 's1', line: 'logistics', titleKey: 'Entrega Especializada 24h', title: 'Entrega Especializada 24h', description: 'Distribución en tiempo récord a cualquier punto de la isla, garantizando Vieques y Culebra.', tags: ['entrega rápida', 'isla completa', '24 horas'], related: ['s4', 's7', 's10'] },
   { id: 's2', line: 'logistics', title: 'Logística de Última Milla', description: 'Conectamos su producto con el cliente final con la mayor eficiencia del mercado local.', tags: ['última milla', 'distribución', 'B2B'], related: ['s6', 's8'] },
   { id: 's4', line: 'depot', title: 'Almacenaje Estratégico', description: 'Espacios seguros y optimizados para el resguardo y manejo de su inventario.', tags: ['almacenaje', 'inventario', 'seguridad'], related: ['s1', 's7', 's9'] },
   { id: 's5', line: 'depot', title: 'Fulfillment & Picking', description: 'Gestión integral de órdenes desde la recepción hasta el empaque final.', tags: ['fulfillment', 'e-commerce', 'órdenes'], related: ['s1', 's7', 's8'] },
@@ -77,8 +73,6 @@ const SERVICES = [
 
 const HERO_SLIDES = [
   {
-    tag: 'Advance Logistics – 24h en toda la isla',
-    h1: 'Distribución que', accent: 'llega', h2: 'a tiempo, todos los', muted: 'días.',
     fileName: 'advance-group-distribucion-logistica-entregas-puntuales-puerto-rico.jpg',
     photo: 'https://firebasestorage.googleapis.com/v0/b/advancegroup-web-4391643-961a3.firebasestorage.app/o/landing%2Fadvance-group-distribucion-logistica-entregas-puntuales-puerto-rico.jpg?alt=media&token=f47404af-8051-4a42-b4d8-b51e262b2413',
     titleEs: 'Advance Group | Distribución que llega a tiempo todos los días',
@@ -87,10 +81,9 @@ const HERO_SLIDES = [
     altEn: 'Advance Group distribution operation handling on-time deliveries for businesses across Puerto Rico',
     keywordsEs: 'Advance Group, distribución, logística, entregas puntuales, entregas a tiempo, entregas diarias, transporte, fulfillment, almacen, almacén, bodega, despacho, reparto, operaciones, cadena de suministro, Puerto Rico, entrega same-day, entrega el mismo día',
     keywordsEn: 'Advance Group, distribution, logistics, on-time delivery, daily delivery, fulfillment, warehousing, warehouse, storage, dispatch, route delivery, supply chain, last mile, same-day delivery, Puerto Rico logistics',
+    slideIndex: 0,
   },
   {
-    tag: 'Advance Solutions – Crecimiento de marcas',
-    h1: 'Marcas que', accent: 'crecen', h2: 'con estrategia y', muted: 'datos.',
     fileName: 'advance-group-crecimiento-de-marcas-estrategia-datos-puerto-rico.jpg',
     photo: 'https://firebasestorage.googleapis.com/v0/b/advancegroup-web-4391643-961a3.firebasestorage.app/o/landing%2Fadvance-group-crecimiento-de-marcas-estrategia-datos-puerto-rico.jpg?alt=media&token=ad9b415a-d6a9-4a38-8d7a-f9c6f3fa2bc4',
     titleEs: 'Advance Group | Marcas que crecen con estrategia y datos',
@@ -99,10 +92,9 @@ const HERO_SLIDES = [
     altEn: 'Advance Group team using commercial strategy and data insights to drive brand growth in Puerto Rico',
     keywordsEs: 'Advance Group, crecimiento de marcas, estrategia comercial, estrategia de ventas, análisis de datos, inteligencia comercial, expansion comercial, expansión comercial, desarrollo de mercado, posicionamiento de marca, mercadeo, ventas, marcas, Puerto Rico, business intelligence',
     keywordsEn: 'Advance Group, brand growth, commercial strategy, sales strategy, data insights, analytics, market development, go-to-market, brand positioning, business intelligence, growth strategy, Puerto Rico market expansion',
+    slideIndex: 1,
   },
   {
-    tag: 'Desarrollamos negocios, construimos marcas',
-    h1: 'Estrategia que', accent: 'vende', h2: 'y logística que', muted: 'cumple.',
     fileName: 'advance-group-estrategia-comercial-logistica-operacional-puerto-rico.jpg',
     photo: 'https://firebasestorage.googleapis.com/v0/b/advancegroup-web-4391643-961a3.firebasestorage.app/o/landing%2Fadvance-group-estrategia-comercial-logistica-operacional-puerto-rico.jpg?alt=media&token=0dbf7ae3-aab1-4ea1-a5f6-1dfd41efd2e6',
     titleEs: 'Advance Group | Estrategia que vende y logística que cumple',
@@ -111,6 +103,7 @@ const HERO_SLIDES = [
     altEn: 'Integrated commercial strategy and logistics services from Advance Group for companies operating in Puerto Rico',
     keywordsEs: 'Advance Group, estrategia comercial, logística operacional, ventas, distribución, fulfillment, ejecución operacional, manejo de órdenes, ordenes, servicio, operaciones, expansión comercial, almacén, despacho, Puerto Rico',
     keywordsEn: 'Advance Group, commercial strategy, logistics execution, sales enablement, fulfillment, distribution, order management, operations, execution, business growth, go-to-market support, Puerto Rico',
+    slideIndex: 2,
   },
 ];
 
@@ -123,6 +116,7 @@ const LogoSVG = ({ accentColor = BRAND_COLORS.LOGISTICS_GREY, size = 60 }) => (
 );
 
 const VideoPlayer = () => {
+  const { t } = useTranslation();
   const videoRef = React.useRef(null);
   const containerRef = React.useRef(null);
 
@@ -178,7 +172,7 @@ const VideoPlayer = () => {
           <button
             onClick={() => { setIsMuted(m => !m); if(videoRef.current) videoRef.current.muted = !isMuted; }}
             className="absolute bottom-4 right-4 bg-black/60 hover:bg-[#F37021] text-white rounded-full p-2 transition-all duration-200 z-10"
-            title={isMuted ? 'Activar sonido' : 'Silenciar'}
+            title={isMuted ? t('video.unmuteLabel') : t('video.muteLabel')}
           >
             {isMuted ? (
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
@@ -217,13 +211,26 @@ const VOLUME_OPTIONS = [
 
 const FREQUENCY_OPTIONS = ['Recurrente', 'Mensual', 'Puntual'];
 
+// Service option keys for i18n (value stored in Firestore is the EN key)
+const SERVICE_OPTION_KEYS = [
+  'distribucion',
+  'logistica',
+  'fulfillment',
+  'estrategia',
+  'crecimiento',
+  'manejo',
+  'soporte',
+];
+
 const App = () => {
+  const { t, i18n } = useTranslation();
+
   const [activeSection, setActiveSection] = React.useState('home');
   const [filter, setFilter] = React.useState('all');
   const [searchQuery, setSearchQuery] = React.useState('');
   const [selectedService, setSelectedService] = React.useState(null);
   const [formStatus, setFormStatus] = React.useState('idle'); // idle|submitting|success|error
-  const [selectedServices, setSelectedServices] = React.useState([]);
+  const [selectedServiceKeys, setSelectedServiceKeys] = React.useState([]);
   const [heroSlide, setHeroSlide] = React.useState(0);
 
   // Consentimiento
@@ -231,8 +238,8 @@ const App = () => {
   const [smsConsent, setSmsConsent] = React.useState(false);
 
   React.useEffect(() => {
-    const t = setInterval(() => setHeroSlide(p => (p + 1) % HERO_SLIDES.length), 4500);
-    return () => clearInterval(t);
+    const timer = setInterval(() => setHeroSlide(p => (p + 1) % HERO_SLIDES.length), 4500);
+    return () => clearInterval(timer);
   }, []);
 
   const filteredServices = React.useMemo(() => {
@@ -244,15 +251,18 @@ const App = () => {
     });
   }, [filter, searchQuery]);
 
-  const toggleService = (service) => {
-    setSelectedServices(prev =>
-      prev.includes(service) ? prev.filter(s => s !== service) : [...prev, service]
+  const toggleServiceKey = (key) => {
+    setSelectedServiceKeys(prev =>
+      prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]
     );
   };
 
+  const currentSlide = HERO_SLIDES[heroSlide];
+  const slideData = t(`hero.slides.${heroSlide}`, { returnObjects: true });
+
   const handleContactSubmit = async (e) => {
     e.preventDefault();
-    if (!termsAccepted) return; // bloqueo reforzado en UI
+    if (!termsAccepted) return;
     setFormStatus('submitting');
 
     const fd = new FormData(e.target);
@@ -276,7 +286,7 @@ const App = () => {
         municipio: (fd.get('municipio') || '').trim() || null,
 
         // Datos de negocio (alimentan el scoring)
-        services:  selectedServices,
+        services:  selectedServiceKeys,
         volume:    (fd.get('volumen') || '').trim() || null,
         frequency: (fd.get('frecuencia') || '').trim() || null,
         message:   (fd.get('mensaje') || '').trim() || null,
@@ -289,7 +299,8 @@ const App = () => {
         smsConsent:           smsConsent,
         smsConsentAt:         smsConsent ? serverTimestamp() : null,
         smsConsentSource:     'web_contact_form',
-        smsConsentTextVersion: 'V1',
+        smsConsentTextVersion: i18n.language === 'es' ? 'V1_ES' : 'V1_EN',
+        smsConsentLanguage:   i18n.language,
         consentIp,
 
         // Metadata del lead
@@ -297,6 +308,7 @@ const App = () => {
         status:   'NUEVO',
         priority: 'Medium',
         optedOut: false,
+        formLanguage: i18n.language,
 
         createdAt:  serverTimestamp(),
         updatedAt:  serverTimestamp(),
@@ -304,7 +316,7 @@ const App = () => {
 
       setFormStatus('success');
       e.target.reset();
-      setSelectedServices([]);
+      setSelectedServiceKeys([]);
       setTermsAccepted(false);
       setSmsConsent(false);
       setTimeout(() => setFormStatus('idle'), 4000);
@@ -316,6 +328,13 @@ const App = () => {
   };
 
   const getServiceById = (id) => SERVICES.find(s => s.id === id);
+
+  // Helper: get localized image alt/title for current slide
+  const slideAlt = i18n.language === 'en' ? currentSlide.altEn : currentSlide.altEs;
+  const slideTitle = i18n.language === 'en' ? currentSlide.titleEn : currentSlide.titleEs;
+
+  // Business line display names from i18n
+  const getLineName = (lineId) => t(`businessLines.${lineId}.name`);
 
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-orange-100 selection:text-orange-700">
@@ -331,12 +350,22 @@ const App = () => {
             </div>
           </div>
           <div className="hidden md:flex items-center gap-8 font-bold text-sm uppercase tracking-widest text-slate-500">
-            <button onClick={() => setActiveSection('home')} className={`hover:text-[#F37021] transition-colors ${activeSection === 'home' ? 'text-[#F37021]' : ''}`}>Inicio</button>
-            <button onClick={() => setActiveSection('services')} className={`hover:text-[#F37021] transition-colors ${activeSection === 'services' ? 'text-[#F37021]' : ''}`}>Soluciones</button>
-            <button onClick={() => setActiveSection('contact')} className={`hover:text-[#F37021] transition-colors ${activeSection === 'contact' ? 'text-[#F37021]' : ''}`}>Contacto</button>
+            <button onClick={() => setActiveSection('home')} className={`hover:text-[#F37021] transition-colors ${activeSection === 'home' ? 'text-[#F37021]' : ''}`}>{t('nav.home')}</button>
+            <button onClick={() => setActiveSection('services')} className={`hover:text-[#F37021] transition-colors ${activeSection === 'services' ? 'text-[#F37021]' : ''}`}>{t('nav.solutions')}</button>
+            <button onClick={() => setActiveSection('contact')} className={`hover:text-[#F37021] transition-colors ${activeSection === 'contact' ? 'text-[#F37021]' : ''}`}>{t('nav.contact')}</button>
+
+            {/* Language toggle */}
+            <button
+              onClick={() => i18n.changeLanguage(i18n.language === 'es' ? 'en' : 'es')}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-black tracking-widest text-slate-500 hover:border-[#F37021] hover:text-[#F37021] transition-all"
+            >
+              <span className={i18n.language === 'en' ? 'text-[#F37021]' : 'text-slate-300'}>EN</span>
+              <span className="text-slate-200">|</span>
+              <span className={i18n.language === 'es' ? 'text-[#F37021]' : 'text-slate-300'}>ES</span>
+            </button>
           </div>
           <button onClick={() => setActiveSection('contact')} className="bg-[#F37021] text-white px-6 py-2.5 rounded-lg font-bold hover:bg-[#d65d18] transition-all shadow-lg shadow-orange-200">
-            Cotizar ahora
+            {t('nav.quote')}
           </button>
         </div>
       </nav>
@@ -348,12 +377,12 @@ const App = () => {
             <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
               <div className="space-y-8">
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-50 text-[#F37021] text-xs font-black tracking-widest uppercase">
-                  <TrendingUp size={14} /> {HERO_SLIDES[heroSlide].tag}
+                  <TrendingUp size={14} /> {slideData.tag}
                 </div>
                 <h1 className="text-5xl md:text-7xl font-black tracking-tight text-slate-900 leading-[0.95]">
-                  {HERO_SLIDES[heroSlide].h1} <br />
-                  <span className="text-[#F37021]">{HERO_SLIDES[heroSlide].accent}</span> {HERO_SLIDES[heroSlide].h2} <br />
-                  <span className="text-slate-400">{HERO_SLIDES[heroSlide].muted}</span>
+                  {slideData.h1} <br />
+                  <span className="text-[#F37021]">{slideData.accent}</span> {slideData.h2} <br />
+                  <span className="text-slate-400">{slideData.muted}</span>
                 </h1>
                 <div className="flex items-center gap-2">
                   {HERO_SLIDES.map((_, i) => (
@@ -363,11 +392,11 @@ const App = () => {
                   ))}
                 </div>
                 <p className="text-xl text-slate-500 leading-relaxed max-w-lg">
-                  En Advance Group, no solo distribuimos productos; actuamos como su socio integral para posicionar y escalar su marca en Puerto Rico y más allá.
+                  {t('hero.description')}
                 </p>
                 <div className="flex flex-wrap gap-4 pt-4">
                   <button onClick={() => setActiveSection('services')} className="flex items-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-xl font-bold hover:bg-[#F37021] transition-all transform hover:-translate-y-1 shadow-xl">
-                    Explorar Soluciones <ArrowRight size={20} />
+                    {t('hero.exploreCta')} <ArrowRight size={20} />
                   </button>
                   <div className="flex items-center gap-4 px-6 py-4">
                     <div className="flex -space-x-3">
@@ -393,20 +422,20 @@ const App = () => {
                         </div>
                       ))}
                     </div>
-                    <p className="text-sm font-bold text-slate-400">Trusted by top local brands</p>
+                    <p className="text-sm font-bold text-slate-400">{t('hero.partnersLabel')}</p>
                   </div>
                 </div>
               </div>
               <div className="relative">
                 <div className="relative z-10 rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white bg-slate-100 aspect-[4/5] md:aspect-square">
-                  <img src={HERO_SLIDES[heroSlide].photo} alt={HERO_SLIDES[heroSlide].altEs} title={HERO_SLIDES[heroSlide].titleEs} className="w-full h-full object-cover transition-all duration-700" />
+                  <img src={currentSlide.photo} alt={slideAlt} title={slideTitle} className="w-full h-full object-cover transition-all duration-700" />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
                   <div className="absolute bottom-10 left-10 right-10 text-white">
                     <div className="flex items-center gap-4 mb-2">
                       <Handshake size={32} className="text-[#4DB6AC]" />
-                      <h3 className="text-2xl font-black">Socios Estratégicos</h3>
+                      <h3 className="text-2xl font-black">{t('hero.strategicPartnersTitle')}</h3>
                     </div>
-                    <p className="text-slate-200 font-medium">Llevamos su producto al mercado con éxito y ejecución de alto nivel.</p>
+                    <p className="text-slate-200 font-medium">{t('hero.strategicPartnersDesc')}</p>
                   </div>
                 </div>
               </div>
@@ -421,8 +450,8 @@ const App = () => {
           <section className="py-24 bg-slate-50">
             <div className="max-w-7xl mx-auto px-4">
               <div className="text-center mb-16 space-y-4">
-                <h2 className="text-4xl font-black text-slate-900">Un Soluciones Sin Límites</h2>
-                <p className="text-slate-500 max-w-2xl mx-auto font-medium">Integramos estrategia, almacenamiento y distribución bajo un mismo estándar de excelencia.</p>
+                <h2 className="text-4xl font-black text-slate-900">{t('businessLines.sectionTitle')}</h2>
+                <p className="text-slate-500 max-w-2xl mx-auto font-medium">{t('businessLines.sectionSubtitle')}</p>
               </div>
               <div className="grid md:grid-cols-3 gap-8">
                 {Object.values(BUSINESS_LINES).map((line) => (
@@ -431,10 +460,10 @@ const App = () => {
                       <LogoSVG accentColor={line.accent} size={50} />
                       <div className={`p-3 rounded-2xl ${line.bg} ${line.color}`}><line.icon size={24} /></div>
                     </div>
-                    <h3 className="text-2xl font-black text-slate-900 mb-4">{line.name}</h3>
-                    <p className="text-slate-500 mb-8 leading-relaxed font-medium flex-grow">{line.description}</p>
+                    <h3 className="text-2xl font-black text-slate-900 mb-4">{t(`businessLines.${line.id}.name`)}</h3>
+                    <p className="text-slate-500 mb-8 leading-relaxed font-medium flex-grow">{t(`businessLines.${line.id}.description`)}</p>
                     <div className="flex items-center gap-2 font-black text-xs uppercase tracking-widest text-[#F37021] group-hover:gap-4 transition-all">
-                      Conocer Servicios <ChevronRight size={16} />
+                      {t('businessLines.knowServices')} <ChevronRight size={16} />
                     </div>
                   </div>
                 ))}
@@ -448,12 +477,12 @@ const App = () => {
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-[#4DB6AC]/10 blur-[100px]" />
                 <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
                   <div className="space-y-6">
-                    <h2 className="text-4xl font-black text-white">Industrias que Atendemos</h2>
-                    <p className="text-slate-400 font-medium text-lg leading-relaxed">Advance Group es flexible y adaptable. Trabajamos de manera transversal para potenciar marcas de cualquier sector.</p>
+                    <h2 className="text-4xl font-black text-white">{t('industries.title')}</h2>
+                    <p className="text-slate-400 font-medium text-lg leading-relaxed">{t('industries.subtitle')}</p>
                     <div className="grid grid-cols-2 gap-4 items-stretch">
-                      {['Salud & Bienestar', 'Belleza', 'Automotriz', 'Consumo Masivo', 'Industrial', 'Retail'].map(i => (
-                        <div key={i} className="flex items-center gap-2 text-white/80 font-bold h-full">
-                          <div className="w-2 h-2 rounded-full bg-[#4DB6AC]" /> {i}
+                      {t('industries.list', { returnObjects: true }).map((industry) => (
+                        <div key={industry} className="flex items-center gap-2 text-white/80 font-bold h-full">
+                          <div className="w-2 h-2 rounded-full bg-[#4DB6AC]" /> {industry}
                         </div>
                       ))}
                     </div>
@@ -462,21 +491,21 @@ const App = () => {
                     <div className="space-y-4 pt-8">
                       <div className="aspect-square bg-white/5 rounded-3xl border border-white/10 flex flex-col items-center justify-center p-6 text-center group hover:bg-[#F37021] transition-all">
                         <Store className="text-[#4DB6AC] mb-4 group-hover:text-white" size={32} />
-                        <p className="text-xs font-black uppercase tracking-widest text-white">Canal Retail</p>
+                        <p className="text-xs font-black uppercase tracking-widest text-white">{t('industries.retailChannel')}</p>
                       </div>
                       <div className="aspect-square bg-white/5 rounded-3xl border border-white/10 flex flex-col items-center justify-center p-6 text-center group hover:bg-[#4DB6AC] transition-all">
                         <Users className="text-[#F37021] mb-4 group-hover:text-white" size={32} />
-                        <p className="text-xs font-black uppercase tracking-widest text-white">Ventas B2B</p>
+                        <p className="text-xs font-black uppercase tracking-widest text-white">{t('industries.b2bSales')}</p>
                       </div>
                     </div>
                     <div className="space-y-4">
                       <div className="aspect-square bg-white/5 rounded-3xl border border-white/10 flex flex-col items-center justify-center p-6 text-center group hover:bg-white/20 transition-all">
                         <BarChart3 className="text-white mb-4" size={32} />
-                        <p className="text-xs font-black uppercase tracking-widest text-white">Análisis</p>
+                        <p className="text-xs font-black uppercase tracking-widest text-white">{t('industries.analytics')}</p>
                       </div>
                       <div className="aspect-square bg-white/5 rounded-3xl border border-white/10 flex flex-col items-center justify-center p-6 text-center group hover:bg-[#1A237E] transition-all">
                         <Box className="text-[#F37021] mb-4 group-hover:text-white" size={32} />
-                        <p className="text-xs font-black uppercase tracking-widest text-white">Distribución</p>
+                        <p className="text-xs font-black uppercase tracking-widest text-white">{t('industries.distribution')}</p>
                       </div>
                     </div>
                   </div>
@@ -494,18 +523,18 @@ const App = () => {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 border-b border-slate-100 pb-12">
               <div className="space-y-4">
                 <div className="w-12 h-1.5 bg-[#F37021] rounded-full" />
-                <h2 className="text-5xl font-black text-slate-900 tracking-tight">Soluciones de Soluciones</h2>
-                <p className="text-slate-500 text-lg font-medium">De la estrategia a la entrega final.</p>
+                <h2 className="text-5xl font-black text-slate-900 tracking-tight">{t('services.heading')}</h2>
+                <p className="text-slate-500 text-lg font-medium">{t('services.subtitle')}</p>
               </div>
               <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
                 <div className="relative">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                  <input type="text" placeholder="¿Qué necesita su marca?" className="w-full md:w-80 pl-12 pr-4 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-orange-500 transition-all font-medium" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+                  <input type="text" placeholder={t('services.searchPlaceholder')} className="w-full md:w-80 pl-12 pr-4 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-orange-500 transition-all font-medium" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                 </div>
                 <div className="flex bg-slate-100 p-1.5 rounded-2xl">
                   {['all', 'logistics', 'depot', 'solutions'].map((l) => (
                     <button key={l} onClick={() => setFilter(l)} className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${filter === l ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>
-                      {l === 'all' ? 'Ver Todos' : l}
+                      {l === 'all' ? t('services.filterAll') : l}
                     </button>
                   ))}
                 </div>
@@ -523,8 +552,8 @@ const App = () => {
                   <p className="text-slate-500 text-sm mb-8 leading-relaxed font-medium line-clamp-3">{service.description}</p>
                   <div className="mt-auto pt-6 border-t border-slate-50 flex items-center justify-between">
                     <div className="flex gap-1">
-                      {service.tags.slice(0, 2).map(t => (
-                        <span key={t} className="text-[9px] font-black uppercase tracking-widest text-slate-400 px-2 py-1 bg-slate-50 rounded">#{t}</span>
+                      {service.tags.slice(0, 2).map(tag => (
+                        <span key={tag} className="text-[9px] font-black uppercase tracking-widest text-slate-400 px-2 py-1 bg-slate-50 rounded">#{tag}</span>
                       ))}
                     </div>
                     <div className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center group-hover:bg-[#F37021] transition-all">
@@ -545,8 +574,8 @@ const App = () => {
             <div className="grid md:grid-cols-2 gap-24 items-start">
               <div className="space-y-12">
                 <div className="space-y-6">
-                  <h2 className="text-6xl font-black leading-none tracking-tight">Hagamos crecer <br/><span className="text-[#F37021]">su marca.</span></h2>
-                  <p className="text-slate-400 text-xl font-medium leading-relaxed max-w-md">Advance Group le ofrece la fuerza de ventas y la inteligencia comercial que su producto necesita.</p>
+                  <h2 className="text-6xl font-black leading-none tracking-tight">{t('contact.heading1')} <br/><span className="text-[#F37021]">{t('contact.headingAccent')}</span></h2>
+                  <p className="text-slate-400 text-xl font-medium leading-relaxed max-w-md">{t('contact.description')}</p>
                 </div>
                 <div className="space-y-6">
                   <div className="flex items-center gap-6 p-6 rounded-3xl bg-white/5 border border-white/10">
@@ -554,7 +583,7 @@ const App = () => {
                       <Phone className="text-white" size={24} />
                     </div>
                     <div>
-                      <p className="text-slate-500 text-xs font-black uppercase tracking-widest mb-1">Contacto Comercial</p>
+                      <p className="text-slate-500 text-xs font-black uppercase tracking-widest mb-1">{t('contact.commercialContact')}</p>
                       <a href="tel:7876539000" className="text-2xl font-bold hover:text-[#F37021] transition-colors">787-653-9000</a>
                     </div>
                   </div>
@@ -572,46 +601,46 @@ const App = () => {
               {/* FORMULARIO EXTENDIDO */}
               <div className="bg-white rounded-[3rem] p-10 text-slate-900 shadow-2xl">
                 <form className="space-y-5" onSubmit={handleContactSubmit}>
-                  <h3 className="text-2xl font-black mb-1">Solicitud de Alianza</h3>
-                  <p className="text-xs text-slate-400 mb-4">Todos los campos marcados con <span className="text-orange-500">*</span> son obligatorios.</p>
+                  <h3 className="text-2xl font-black mb-1">{t('contact.formTitle')}</h3>
+                  <p className="text-xs text-slate-400 mb-4">{t('contact.formRequired')} <span className="text-orange-500">*</span> {t('contact.formRequiredSuffix')}</p>
 
                   {/* Nombre */}
-                  <input required className="w-full px-5 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all font-medium text-sm" name="nombre" placeholder="Su nombre completo *" />
+                  <input required className="w-full px-5 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all font-medium text-sm" name="nombre" placeholder={t('contact.namePlaceholder')} />
 
                   {/* Empresa */}
-                  <input required className="w-full px-5 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all font-medium text-sm" name="empresa" placeholder="Nombre de su Empresa *" />
+                  <input required className="w-full px-5 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all font-medium text-sm" name="empresa" placeholder={t('contact.companyPlaceholder')} />
 
                   {/* Email + Teléfono */}
                   <div className="grid grid-cols-2 gap-3">
-                    <input required type="email" className="w-full px-5 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all font-medium text-sm" name="email" placeholder="Email *" />
-                    <input required type="tel" className="w-full px-5 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all font-medium text-sm" name="telefono" placeholder="Teléfono *" />
+                    <input required type="email" className="w-full px-5 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all font-medium text-sm" name="email" placeholder={t('contact.emailPlaceholder')} />
+                    <input required type="tel" className="w-full px-5 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all font-medium text-sm" name="telefono" placeholder={t('contact.phonePlaceholder')} />
                   </div>
 
                   {/* Municipio */}
                   <select name="municipio" className="w-full px-5 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all font-medium text-sm text-slate-600">
-                    <option value="">Municipio (opcional)</option>
+                    <option value="">{t('contact.municipioPlaceholder')}</option>
                     {PR_MUNICIPIOS.map(m => <option key={m} value={m}>{m}</option>)}
                   </select>
 
                   {/* Servicio de interés */}
                   <div>
-                    <p className="text-sm font-semibold text-slate-600 mb-3">Servicio de interés <span className="text-orange-500">*</span></p>
+                    <p className="text-sm font-semibold text-slate-600 mb-3">{t('contact.serviceInterest')} <span className="text-orange-500">*</span></p>
                     <div className="grid grid-cols-2 gap-2">
-                      {['Distribución','Logística & Almacén','Fulfillment','Estrategia Comercial','Crecimiento de Marcas','Manejo de Órdenes','Soporte Operacional'].map(service => (
+                      {SERVICE_OPTION_KEYS.map(key => (
                         <button
-                          key={service} type="button" onClick={() => toggleService(service)}
+                          key={key} type="button" onClick={() => toggleServiceKey(key)}
                           className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-all text-sm text-left ${
-                            selectedServices.includes(service)
+                            selectedServiceKeys.includes(key)
                               ? 'border-[#F37021] bg-orange-50 text-[#F37021] font-semibold'
                               : 'border-gray-200 bg-white text-slate-600 hover:border-orange-300'
                           }`}
                         >
-                          <span className={`flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${selectedServices.includes(service) ? 'border-[#F37021] bg-[#F37021]' : 'border-gray-300 bg-white'}`}>
-                            {selectedServices.includes(service) && (
+                          <span className={`flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${selectedServiceKeys.includes(key) ? 'border-[#F37021] bg-[#F37021]' : 'border-gray-300 bg-white'}`}>
+                            {selectedServiceKeys.includes(key) && (
                               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                             )}
                           </span>
-                          <span>{service}</span>
+                          <span>{t(`serviceOptions.${key}`)}</span>
                         </button>
                       ))}
                     </div>
@@ -620,23 +649,23 @@ const App = () => {
                   {/* Volumen + Frecuencia */}
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs font-semibold text-slate-500 mb-1.5 block">Volumen estimado</label>
+                      <label className="text-xs font-semibold text-slate-500 mb-1.5 block">{t('contact.volumeLabel')}</label>
                       <select name="volumen" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all text-sm text-slate-600">
-                        <option value="">Seleccionar...</option>
+                        <option value="">{t('contact.selectPlaceholder')}</option>
                         {VOLUME_OPTIONS.map(v => <option key={v} value={v}>{v}</option>)}
                       </select>
                     </div>
                     <div>
-                      <label className="text-xs font-semibold text-slate-500 mb-1.5 block">Frecuencia del servicio</label>
+                      <label className="text-xs font-semibold text-slate-500 mb-1.5 block">{t('contact.frequencyLabel')}</label>
                       <select name="frecuencia" className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all text-sm text-slate-600">
-                        <option value="">Seleccionar...</option>
+                        <option value="">{t('contact.selectPlaceholder')}</option>
                         {FREQUENCY_OPTIONS.map(f => <option key={f} value={f}>{f}</option>)}
                       </select>
                     </div>
                   </div>
 
                   {/* Mensaje */}
-                  <textarea rows="3" className="w-full px-5 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all font-medium text-sm resize-none" name="mensaje" placeholder="Cuéntenos sobre su producto o necesidad..."></textarea>
+                  <textarea rows="3" className="w-full px-5 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all font-medium text-sm resize-none" name="mensaje" placeholder={t('contact.messagePlaceholder')}></textarea>
 
                   {/* ── CONSENTIMIENTOS (TCPA) ─────────────────────────── */}
                   <div className="space-y-3 pt-2 border-t border-slate-100">
@@ -651,13 +680,13 @@ const App = () => {
                         )}
                       </span>
                       <span className="text-xs text-slate-600 leading-relaxed">
-                        He leído y acepto los{' '}
+                        {t('contact.termsText')}{' '}
                         <a href="/terminos" target="_blank" rel="noopener noreferrer" className="text-[#F37021] font-bold underline" onClick={e => e.stopPropagation()}>
-                          Términos de Servicio
+                          {t('contact.termsLink')}
                         </a>{' '}
-                        y la{' '}
+                        {t('contact.andThe')}{' '}
                         <a href="/privacidad" target="_blank" rel="noopener noreferrer" className="text-[#F37021] font-bold underline" onClick={e => e.stopPropagation()}>
-                          Política de Privacidad
+                          {t('contact.privacyLink')}
                         </a>
                         . <span className="text-orange-500 font-bold">*</span>
                       </span>
@@ -674,8 +703,8 @@ const App = () => {
                         )}
                       </span>
                       <span className="text-xs text-slate-500 leading-relaxed">
-                        {SMS_CONSENT_TEXT_V1}{' '}
-                        <span className="text-slate-400 italic">(Opcional)</span>
+                        {t('contact.smsConsent')}{' '}
+                        <span className="text-slate-400 italic">{t('contact.smsOptional')}</span>
                       </span>
                     </label>
                   </div>
@@ -683,22 +712,22 @@ const App = () => {
                   {/* Botón de envío */}
                   <button
                     type="submit"
-                    disabled={formStatus === 'submitting' || !termsAccepted || selectedServices.length === 0}
+                    disabled={formStatus === 'submitting' || !termsAccepted || selectedServiceKeys.length === 0}
                     className={`w-full py-4 rounded-2xl font-black uppercase tracking-widest text-sm transition-all shadow-xl disabled:opacity-50 disabled:cursor-not-allowed ${
                       formStatus === 'success' ? 'bg-emerald-500 text-white' :
                       formStatus === 'error'   ? 'bg-red-500 text-white' :
                       'bg-slate-900 text-white hover:bg-[#F37021]'
                     }`}
                   >
-                    {formStatus === 'idle'       && 'Enviar Solicitud'}
-                    {formStatus === 'submitting' && 'Procesando...'}
-                    {formStatus === 'success'    && '¡Solicitud Enviada! 🎉'}
-                    {formStatus === 'error'      && 'Error — Intente de nuevo'}
+                    {formStatus === 'idle'       && t('contact.submitIdle')}
+                    {formStatus === 'submitting' && t('contact.submitLoading')}
+                    {formStatus === 'success'    && t('contact.submitSuccess')}
+                    {formStatus === 'error'      && t('contact.submitError')}
                   </button>
 
                   {!termsAccepted && (
                     <p className="text-center text-xs text-red-500 font-medium">
-                      Debes aceptar los Términos antes de enviar.
+                      {t('contact.termsRequired')}
                     </p>
                   )}
                 </form>
@@ -717,24 +746,24 @@ const App = () => {
                 <LogoSVG accentColor={BRAND_COLORS.ORANGE} size={40} />
                 <span className="font-black text-2xl text-slate-900 tracking-tighter">ADVANCE GROUP</span>
               </div>
-              <p className="text-slate-500 font-medium leading-relaxed">El ecosistema comercial y logístico líder en Puerto Rico. De la estrategia de mercado a la entrega final en 24 horas.</p>
+              <p className="text-slate-500 font-medium leading-relaxed">{t('footer.description')}</p>
             </div>
             <div className="flex gap-12 font-bold text-slate-600">
               <div className="space-y-4">
-                <p className="text-xs uppercase tracking-widest text-slate-400">Puerto Rico</p>
-                <p className="text-sm">Garantía de Servicio en 24 horas a los 78 municipios</p>
+                <p className="text-xs uppercase tracking-widest text-slate-400">{t('footer.puertoRico')}</p>
+                <p className="text-sm">{t('footer.serviceGuarantee')}</p>
               </div>
               <div className="space-y-4">
-                <p className="text-xs uppercase tracking-widest text-slate-400">Social</p>
+                <p className="text-xs uppercase tracking-widest text-slate-400">{t('footer.social')}</p>
                 <p className="text-sm underline cursor-pointer">LinkedIn</p>
                 <p className="text-sm underline cursor-pointer">Instagram</p>
               </div>
             </div>
           </div>
-          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 pt-12 border-t border-slate-50">© 2025 ADVANCE GROUP. BUILT IN PUERTO RICO.</p>
+          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 pt-12 border-t border-slate-50">{t('footer.copyright')}</p>
         </div>
         <div className="text-center py-3 border-t border-slate-800 text-slate-500 text-xs">
-          Powered by <span className="text-slate-400">Alfonso Moreno LLC.</span>
+          {t('footer.poweredBy')} <span className="text-slate-400">{t('footer.poweredByCompany')}</span>
         </div>
       </footer>
 
@@ -751,15 +780,15 @@ const App = () => {
                   <div className="space-y-6">
                     <div className={`inline-flex items-center gap-3 px-4 py-2 rounded-2xl text-xs font-black uppercase tracking-[0.15em] ${BUSINESS_LINES[selectedService.line.toUpperCase()].bg} ${BUSINESS_LINES[selectedService.line.toUpperCase()].color}`}>
                       <LogoSVG accentColor={BUSINESS_LINES[selectedService.line.toUpperCase()].accent} size={24} />
-                      {BUSINESS_LINES[selectedService.line.toUpperCase()].name}
+                      {t(`businessLines.${selectedService.line}.name`)}
                     </div>
                     <h3 className="text-4xl md:text-5xl font-black leading-none tracking-tight text-slate-900">{selectedService.title}</h3>
                     <p className="text-slate-500 text-xl font-medium leading-relaxed">{selectedService.description}</p>
                   </div>
                   <div className="space-y-6">
-                    <p className="font-black text-xs text-slate-400 uppercase tracking-[0.2em]">El Valor de Advance:</p>
+                    <p className="font-black text-xs text-slate-400 uppercase tracking-[0.2em]">{t('services.valueTitle')}</p>
                     <ul className="space-y-4">
-                      {["Ejecución comercial de punta a punta.", "Infraestructura logística integrada de 24 horas.", "Expertise en múltiples industrias y canales."].map((benefit, idx) => (
+                      {t('services.defaultBenefits', { returnObjects: true }).map((benefit, idx) => (
                         <li key={idx} className="flex items-start gap-4 text-slate-700 font-bold">
                           <div className="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center shrink-0 mt-0.5">
                             <CheckCircle2 className="text-[#F37021]" size={14} />
@@ -770,15 +799,15 @@ const App = () => {
                     </ul>
                   </div>
                   <button onClick={() => { setSelectedService(null); setActiveSection('contact'); }} className="w-full py-5 bg-[#F37021] text-white rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-slate-900 transition-all shadow-2xl shadow-orange-500/20">
-                    Hablar con un Especialista
+                    {t('services.speakSpecialistCta')}
                   </button>
                 </div>
                 <div className="bg-slate-50 rounded-[2.5rem] p-10 space-y-8 border border-slate-100">
                   <div className="flex items-center gap-3">
                     <Zap className="text-[#F37021] fill-[#F37021]" size={24} />
-                    <h4 className="font-black text-slate-900 uppercase tracking-tight text-lg">Solución 360°</h4>
+                    <h4 className="font-black text-slate-900 uppercase tracking-tight text-lg">{t('services.solution360Title')}</h4>
                   </div>
-                  <p className="text-sm font-medium text-slate-500 leading-relaxed italic">"En Advance, potenciamos su crecimiento comercial integrando almacenamiento y distribución express."</p>
+                  <p className="text-sm font-medium text-slate-500 leading-relaxed italic">"{t('services.solution360Quote')}"</p>
                   <div className="space-y-4">
                     {selectedService.related.map(id => {
                       const rel = getServiceById(id);
@@ -790,7 +819,7 @@ const App = () => {
                             {React.createElement(line.icon, { className: `w-6 h-6 ${line.color}` })}
                           </div>
                           <div className="min-w-0">
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] leading-none mb-1.5">{line.name}</p>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] leading-none mb-1.5">{t(`businessLines.${rel.line}.name`)}</p>
                             <p className="font-black text-slate-900 truncate group-hover:text-[#F37021] transition-colors">{rel.title}</p>
                           </div>
                           <ChevronRight className="ml-auto text-slate-300 group-hover:text-[#F37021] group-hover:translate-x-1 transition-all" size={20} />

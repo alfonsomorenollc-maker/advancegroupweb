@@ -1,0 +1,120 @@
+{
+  "nav": {
+    "home": "Home",
+    "solutions": "Solutions",
+    "contact": "Contact",
+    "quote": "Get a quote"
+  },
+  "hero": {
+    "description": "At Advance Group, we don't just distribute products; we act as your strategic partner to position and scale your brand in Puerto Rico and beyond.",
+    "exploreCta": "Explore Solutions",
+    "partnersLabel": "Trusted by top brands",
+    "strategicPartnersTitle": "Strategic Partners",
+    "strategicPartnersDesc": "We bring your product to market with success and high-level execution.",
+    "slides": [
+      { "tag": "Advance Logistics – 24h island-wide", "h1": "Distribution that", "accent": "arrives", "h2": "on time, every", "muted": "day." },
+      { "tag": "Advance Solutions – Brand growth", "h1": "Brands that", "accent": "grow", "h2": "with strategy and", "muted": "data." },
+      { "tag": "We develop businesses, build brands", "h1": "Strategy that", "accent": "sells", "h2": "and logistics that", "muted": "deliver." }
+    ]
+  },
+  "businessLines": {
+    "logistics": {
+      "name": "Advance Logistics",
+      "description": "Specialized delivery across the island with a 24-hour delivery guarantee, including Vieques and Culebra."
+    },
+    "depot": {
+      "name": "Advance Depot",
+      "description": "Physical solutions hub for packaging, warehousing and merchandise handling."
+    },
+    "solutions": {
+      "name": "Advance Solutions",
+      "description": "Commercial strategy, sales, distribution and brand growth across multiple industries."
+    },
+    "sectionTitle": "Unlimited Solutions",
+    "sectionSubtitle": "We integrate strategy, warehousing and distribution under a single standard of excellence.",
+    "knowServices": "Explore Services"
+  },
+  "industries": {
+    "title": "Industries We Serve",
+    "subtitle": "Advance Group is flexible and adaptable. We work cross-functionally to empower brands in any sector.",
+    "list": ["Health & Wellness", "Beauty", "Automotive", "Consumer Goods", "Industrial", "Retail"],
+    "retailChannel": "Retail Channel",
+    "b2bSales": "B2B Sales",
+    "analytics": "Analytics",
+    "distribution": "Distribution"
+  },
+  "services": {
+    "heading": "Our Solutions",
+    "subtitle": "From strategy to final delivery.",
+    "searchPlaceholder": "What does your brand need?",
+    "filterAll": "View All",
+    "valueTitle": "The Advance Value:",
+    "solution360Title": "360° Solution",
+    "solution360Quote": "At Advance, we power your commercial growth by integrating warehousing and express distribution.",
+    "speakSpecialistCta": "Speak with a Specialist",
+    "defaultBenefits": [
+      "End-to-end commercial execution.",
+      "Integrated 24-hour logistics infrastructure.",
+      "Expertise across multiple industries and channels."
+    ]
+  },
+  "serviceOptions": {
+    "distribucion": "Distribution",
+    "logistica": "Logistics & Warehousing",
+    "fulfillment": "Fulfillment",
+    "estrategia": "Commercial Strategy",
+    "crecimiento": "Brand Growth",
+    "manejo": "Order Management",
+    "soporte": "Operational Support",
+    "cajas": "Box Sales",
+    "corrugado": "Corrugated Cardboard Packaging Customization",
+    "suministros": "Packaging Supplies"
+  },
+  "contact": {
+    "heading1": "Let's grow",
+    "headingAccent": "your brand.",
+    "description": "Advance Group offers you the sales force and commercial intelligence your product needs.",
+    "commercialContact": "Commercial Contact",
+    "formTitle": "Partnership Request",
+    "formRequired": "All fields marked with",
+    "formRequiredSuffix": "are required.",
+    "namePlaceholder": "Your full name *",
+    "companyPlaceholder": "Company name *",
+    "emailPlaceholder": "Email *",
+    "phonePlaceholder": "Phone *",
+    "municipioPlaceholder": "Municipality (optional)",
+    "serviceInterest": "Service of interest",
+    "volumeLabel": "Estimated volume",
+    "frequencyLabel": "Service frequency",
+    "selectPlaceholder": "Select...",
+    "messagePlaceholder": "Tell us about your product or need...",
+    "termsText": "I have read and agree to the",
+    "termsLink": "Terms of Service",
+    "andThe": "and the",
+    "privacyLink": "Privacy Policy",
+    "smsConsent": "I authorize Advance Group to contact me via SMS regarding my request. Message and data rates may apply. I can unsubscribe by replying STOP at any time.",
+    "smsOptional": "(Optional)",
+    "submitIdle": "Send Request",
+    "submitLoading": "Processing...",
+    "submitSuccess": "Request Sent! 🎉",
+    "submitError": "Error — Please try again",
+    "termsRequired": "You must accept the Terms before sending."
+  },
+  "footer": {
+    "description": "Puerto Rico's leading commercial and logistics ecosystem. From market strategy to final 24-hour delivery.",
+    "puertoRico": "Puerto Rico",
+    "serviceGuarantee": "24-hour service guarantee across all 78 municipalities",
+    "social": "Social",
+    "copyright": "© 2025 ADVANCE GROUP. BUILT IN PUERTO RICO.",
+    "poweredBy": "Powered by",
+    "poweredByCompany": "Alfonso Moreno LLC."
+  },
+  "video": {
+    "muteLabel": "Mute",
+    "unmuteLabel": "Unmute"
+  },
+  "lang": {
+    "toggle": "ES",
+    "toggleEs": "EN"
+  }
+}
