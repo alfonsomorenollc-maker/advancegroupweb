@@ -799,7 +799,7 @@ const App = () => {
                   <div className="space-y-6">
                     <p className="font-black text-xs text-slate-400 uppercase tracking-[0.2em]">{t('services.valueTitle')}</p>
                     <ul className="space-y-4">
-                      {t('services.defaultBenefits', { returnObjects: true }).map((benefit, idx) => (
+                      {(t(`serviceBenefits.${selectedService.id}`, { returnObjects: true, defaultValue: t('services.defaultBenefits', { returnObjects: true }) }) || []).map((benefit, idx) => (
                         <li key={idx} className="flex items-start gap-4 text-slate-700 font-bold">
                           <div className="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center shrink-0 mt-0.5">
                             <CheckCircle2 className="text-[#F37021]" size={14} />

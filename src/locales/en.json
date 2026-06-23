@@ -117,5 +117,52 @@
   "lang": {
     "toggle": "ES",
     "toggleEs": "EN"
+  },
+  "serviceBenefits": {
+    "s1": [
+      "Dedicated fleet covering all 78 municipalities, including Vieques and Culebra.",
+      "Real-time tracking from dispatch to confirmed delivery.",
+      "Customized SLA agreements — we deliver or we credit."
+    ],
+    "s2": [
+      "Optimized routes to reduce transit time and cost per delivery.",
+      "Direct integration with your order management system for end-to-end visibility.",
+      "Digital proof of delivery with signature, photo and timestamp at every stop."
+    ],
+    "s4": [
+      "3 Caguas facilities with refrigerated, hazmat and special cargo capacity.",
+      "Real-time inventory with rotating cycle counts and low-stock alerts.",
+      "FIFO, batch and expiration-date tracking — full traceability."
+    ],
+    "s5": [
+      "Order processing from receiving to packed and ready to ship.",
+      "Multi-channel: B2B, e-commerce and retail from a single fulfillment center.",
+      "Picking accuracy rate above 99% with quality audits every shift."
+    ],
+    "s6": [
+      "Custom boxes, dividers and protective materials designed for your product.",
+      "In-warehouse stock for fast replenishment — no high minimum orders.",
+      "Eco-friendly and certified options for regulated industries."
+    ],
+    "s7": [
+      "Sales force with deep knowledge of retail and B2B channels across PR.",
+      "Coverage in supermarkets, pharmacies, hardware stores, clubs and specialty channels.",
+      "Sell-in and sell-out reporting to optimize replenishment and shelf space."
+    ],
+    "s8": [
+      "Local market research before the first shipment — real data, not assumptions.",
+      "Channel go-to-market plan: pricing, placements and activations.",
+      "Hands-on support through introduction, penetration and consolidation."
+    ],
+    "s9": [
+      "Point-of-sale activations: tastings, demos and POP materials.",
+      "Visual materials coordination from design to shelf installation.",
+      "Channel impact measurement and real-time tactic adjustments."
+    ],
+    "s10": [
+      "Channel team with fixed routes and weekly coverage KPIs.",
+      "Shelf audits, proactive restocking and photo capture at point of sale.",
+      "Alignment with your corporate team: shared objectives and executive reports."
+    ]
   }
 }

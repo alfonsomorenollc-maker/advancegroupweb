@@ -117,5 +117,52 @@
   "lang": {
     "toggle": "EN",
     "toggleEs": "ES"
+  },
+  "serviceBenefits": {
+    "s1": [
+      "Flota dedicada con cobertura en los 78 municipios, incluyendo Vieques y Culebra.",
+      "Seguimiento en tiempo real desde el despacho hasta la entrega confirmada.",
+      "Acuerdos SLA personalizados — cumplimos o acreditamos."
+    ],
+    "s2": [
+      "Rutas optimizadas para reducir tiempo de tránsito y costo por entrega.",
+      "Integración directa con su sistema de órdenes para visibilidad end-to-end.",
+      "Prueba de entrega digital con firma, foto y timestamp en cada parada."
+    ],
+    "s4": [
+      "3 bodegas en Caguas con capacidad refrigerada, hazmat y carga especial.",
+      "Inventario en tiempo real con cycle counts rotativos y alertas de bajo stock.",
+      "FIFO, por lotes y por fecha de expiración — trazabilidad completa."
+    ],
+    "s5": [
+      "Procesamiento de órdenes desde recepción hasta empaque listo para despacho.",
+      "Multi-canal: B2B, e-commerce y retail desde un mismo centro de fulfillment.",
+      "Tasa de precisión de picking superior al 99% con auditorías de calidad."
+    ],
+    "s6": [
+      "Diseño y provisión de cajas, separadores y materiales de protección a medida.",
+      "Stock disponible en bodega para reabastecimiento rápido sin pedidos mínimos altos.",
+      "Opciones eco-friendly y certificadas para industrias reguladas."
+    ],
+    "s7": [
+      "Fuerza de ventas con conocimiento profundo de los canales retail y B2B en PR.",
+      "Cobertura en supermercados, farmacias, ferreterías, clubes y canales especializados.",
+      "Reportes de sell-in y sell-out para optimizar reposición y espacio en anaquel."
+    ],
+    "s8": [
+      "Research de mercado local antes del primer despacho — datos reales, no suposiciones.",
+      "Plan go-to-market por canal: pricing, placements y activaciones.",
+      "Acompañamiento en introducción, penetración y consolidación."
+    ],
+    "s9": [
+      "Activaciones en punto de venta: degustaciones, demostraciones y material POP.",
+      "Coordinación de materiales visuales desde diseño hasta instalación en anaquel.",
+      "Medición de impacto por canal y ajuste de táctica en tiempo real."
+    ],
+    "s10": [
+      "Equipo por canal con rutas fijas y KPIs de cobertura semanales.",
+      "Auditorías de anaquel, reposición proactiva y captura fotográfica en PDV.",
+      "Alineación con tu equipo corporativo: objetivos compartidos y reportes ejecutivos."
+    ]
   }
 }
