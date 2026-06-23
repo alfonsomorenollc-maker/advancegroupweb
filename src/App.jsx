@@ -255,27 +255,24 @@ const App = () => {
     setFormStatus('submitting');
     const fd = new FormData(e.target);
     try {
-      await addDoc(collection(db, 'activities'), {
-        orgId: 'advance-group',
-        partyId: 'web_inquiry',
-        type: 'contact',
-            serviciosInteres: selectedServices,
-        summary: 'Solicitud desde Landing Web',
-        description: fd.get('mensaje') || '',
-        createdBy: 'landing_web',
+      await addDoc(collection(db, 'orgs', 'org1', 'leads'), {
+        name: (fd.get('nombre') || '').trim() || (fd.get('empresa') || '').trim(),
+        email: (fd.get('email') || '').trim(),
+        company: (fd.get('empresa') || '').trim() || null,
+        message: (fd.get('mensaje') || '').trim(),
+        services: selectedServices,
+        source: 'WEB',
+        status: 'NUEVO',
+        priority: 'Medium',
         createdAt: serverTimestamp(),
-        metadata: {
-          empresa: fd.get('empresa') || '',
-          email: fd.get('email') || '',
-          interes: fd.get('interes') || '',
-          source: 'advancegrouppr.com'
-        }
+        updatedAt: serverTimestamp(),
       });
       setFormStatus('success');
       e.target.reset();
+      setSelectedServices([]);
       setTimeout(() => setFormStatus('idle'), 3000);
     } catch(err) {
-      console.error('Error:', err);
+      console.error('Error submitting lead:', err);
       setFormStatus('idle');
     }
   };
@@ -542,6 +539,7 @@ const App = () => {
               <div className="bg-white rounded-[3rem] p-10 text-slate-900 shadow-2xl">
                 <form className="space-y-6" onSubmit={handleContactSubmit}>
                   <h3 className="text-2xl font-black mb-6">Solicitud de Alianza</h3>
+                  <input required className="w-full px-6 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-orange-500 transition-all font-medium" name="nombre" placeholder="Su nombre" />
                   <input required className="w-full px-6 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-orange-500 transition-all font-medium" name="empresa" placeholder="Nombre de su Empresa" />
                   <input required type="email" className="w-full px-6 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-orange-500 transition-all font-medium" name="email" placeholder="Email corporativo" />
                   <div>
