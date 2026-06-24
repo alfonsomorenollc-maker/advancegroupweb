@@ -59,6 +59,17 @@
       "Expertise en múltiples industrias y canales."
     ]
   },
+  "serviceItems": {
+    "s1": { "title": "Entrega Especializada 24h", "description": "Distribución en tiempo récord a cualquier punto de la isla, garantizando Vieques y Culebra.", "tags": ["entrega rápida", "isla completa", "24 horas"] },
+    "s2": { "title": "Logística de Última Milla", "description": "Conectamos su producto con el cliente final con la mayor eficiencia del mercado local.", "tags": ["última milla", "distribución", "B2B"] },
+    "s4": { "title": "Almacenaje Estratégico", "description": "Espacios seguros y optimizados para el resguardo y manejo de su inventario.", "tags": ["almacenaje", "inventario", "seguridad"] },
+    "s5": { "title": "Fulfillment & Picking", "description": "Gestión integral de órdenes desde la recepción hasta el empaque final.", "tags": ["fulfillment", "e-commerce", "órdenes"] },
+    "s6": { "title": "Empaque Personalizado", "description": "Diseño y provisión de materiales de protección para carga crítica e industrial.", "tags": ["empaque", "protección", "materiales"] },
+    "s7": { "title": "Venta y Distribución Integral", "description": "Representación comercial y distribución de productos en canales B2B y B2C.", "tags": ["ventas", "distribución", "B2B"] },
+    "s8": { "title": "Estrategia de Lanzamiento", "description": "Análisis de mercado y planes de introducción para nuevas marcas y productos.", "tags": ["estrategia", "mercado", "crecimiento"] },
+    "s9": { "title": "Marketing y Posicionamiento", "description": "Diseño de campañas y activaciones comerciales para impulsar la demanda.", "tags": ["marketing", "branding", "posicionamiento"] },
+    "s10": { "title": "Fuerza de Ventas & Merchandising", "description": "Equipos especializados en punto de venta para maximizar la visibilidad y rotación.", "tags": ["ventas", "punto de venta", "ejecución"] }
+  },
   "serviceOptions": {
     "distribucion": "Distribución",
     "logistica": "Logística & Almacén",

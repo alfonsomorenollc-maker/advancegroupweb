@@ -59,6 +59,17 @@
       "Expertise across multiple industries and channels."
     ]
   },
+  "serviceItems": {
+    "s1": { "title": "Specialized 24h Delivery", "description": "Island-wide distribution at record speed, guaranteed to Vieques and Culebra.", "tags": ["fast delivery", "full island", "24 hours"] },
+    "s2": { "title": "Last-Mile Logistics", "description": "We connect your product to the end customer with the highest efficiency in the local market.", "tags": ["last mile", "distribution", "B2B"] },
+    "s4": { "title": "Strategic Warehousing", "description": "Secure and optimized spaces for the storage and management of your inventory.", "tags": ["storage", "inventory", "security"] },
+    "s5": { "title": "Fulfillment & Picking", "description": "End-to-end order management from receiving to final packaging.", "tags": ["fulfillment", "e-commerce", "orders"] },
+    "s6": { "title": "Custom Packaging", "description": "Design and provision of protective materials for critical and industrial cargo.", "tags": ["packaging", "protection", "materials"] },
+    "s7": { "title": "Integrated Sales & Distribution", "description": "Commercial representation and product distribution across B2B and B2C channels.", "tags": ["sales", "distribution", "B2B"] },
+    "s8": { "title": "Launch Strategy", "description": "Market analysis and introduction plans for new brands and products.", "tags": ["strategy", "market", "growth"] },
+    "s9": { "title": "Marketing & Positioning", "description": "Campaign design and commercial activations to drive demand.", "tags": ["marketing", "branding", "positioning"] },
+    "s10": { "title": "Sales Force & Merchandising", "description": "Specialized point-of-sale teams to maximize visibility and product turnover.", "tags": ["sales", "point of sale", "execution"] }
+  },
   "serviceOptions": {
     "distribucion": "Distribution",
     "logistica": "Logistics & Warehousing",

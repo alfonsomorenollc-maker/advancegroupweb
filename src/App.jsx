@@ -61,15 +61,15 @@ const BUSINESS_LINES = {
 };
 
 const SERVICES = [
-  { id: 's1', line: 'logistics', titleKey: 'Entrega Especializada 24h', title: 'Entrega Especializada 24h', description: 'Distribución en tiempo récord a cualquier punto de la isla, garantizando Vieques y Culebra.', tags: ['entrega rápida', 'isla completa', '24 horas'], related: ['s4', 's7', 's10'] },
-  { id: 's2', line: 'logistics', title: 'Logística de Última Milla', description: 'Conectamos su producto con el cliente final con la mayor eficiencia del mercado local.', tags: ['última milla', 'distribución', 'B2B'], related: ['s6', 's8'] },
-  { id: 's4', line: 'depot', title: 'Almacenaje Estratégico', description: 'Espacios seguros y optimizados para el resguardo y manejo de su inventario.', tags: ['almacenaje', 'inventario', 'seguridad'], related: ['s1', 's7', 's9'] },
-  { id: 's5', line: 'depot', title: 'Fulfillment & Picking', description: 'Gestión integral de órdenes desde la recepción hasta el empaque final.', tags: ['fulfillment', 'e-commerce', 'órdenes'], related: ['s1', 's7', 's8'] },
-  { id: 's6', line: 'depot', title: 'Empaque Personalizado', description: 'Diseño y provisión de materiales de protección para carga crítica e industrial.', tags: ['empaque', 'protección', 'materiales'], related: ['s2', 's10'] },
-  { id: 's7', line: 'solutions', title: 'Venta y Distribución Integral', description: 'Representación comercial y distribución de productos en canales B2B y B2C.', tags: ['ventas', 'distribución', 'comercialización'], related: ['s1', 's4', 's10'] },
-  { id: 's8', line: 'solutions', title: 'Estrategia de Lanzamiento', description: 'Análisis de mercado y planes de introducción para nuevas marcas y productos.', tags: ['estrategia', 'mercado', 'crecimiento'], related: ['s9', 's2'] },
-  { id: 's9', line: 'solutions', title: 'Marketing y Posicionamiento', description: 'Diseño de campañas y activaciones comerciales para impulsar la demanda.', tags: ['marketing', 'branding', 'posicionamiento'], related: ['s8', 's10'] },
-  { id: 's10', line: 'solutions', title: 'Fuerza de Ventas & Merchandising', description: 'Equipos especializados en punto de venta para maximizar la visibilidad y rotación.', tags: ['ventas', 'Punto de Venta', 'ejecución'], related: ['s7', 's1'] }
+  { id: 's1',  line: 'logistics', related: ['s4', 's7', 's10'] },
+  { id: 's2',  line: 'logistics', related: ['s6', 's8'] },
+  { id: 's4',  line: 'depot',     related: ['s1', 's7', 's9'] },
+  { id: 's5',  line: 'depot',     related: ['s1', 's7', 's8'] },
+  { id: 's6',  line: 'depot',     related: ['s2', 's10'] },
+  { id: 's7',  line: 'solutions', related: ['s1', 's4', 's10'] },
+  { id: 's8',  line: 'solutions', related: ['s9', 's2'] },
+  { id: 's9',  line: 'solutions', related: ['s8', 's10'] },
+  { id: 's10', line: 'solutions', related: ['s7', 's1'] }
 ];
 
 const HERO_SLIDES = [
@@ -257,8 +257,10 @@ const App = () => {
   const filteredServices = React.useMemo(() => {
     return SERVICES.filter(s => {
       const matchesFilter = filter === 'all' || s.line === filter;
-      const matchesSearch = s.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                            s.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const sTitle = t(`serviceItems.${s.id}.title`);
+      const sDesc  = t(`serviceItems.${s.id}.description`);
+      const matchesSearch = sTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            sDesc.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesFilter && matchesSearch;
     });
   }, [filter, searchQuery]);
@@ -561,11 +563,11 @@ const App = () => {
                       {React.createElement(BUSINESS_LINES[service.line.toUpperCase()].icon, { className: `w-6 h-6 ${BUSINESS_LINES[service.line.toUpperCase()].color}` })}
                     </div>
                   </div>
-                  <h4 className="text-xl font-black mb-3 text-slate-900 leading-tight group-hover:text-[#F37021] transition-colors">{service.title}</h4>
-                  <p className="text-slate-500 text-sm mb-8 leading-relaxed font-medium line-clamp-3">{service.description}</p>
+                  <h4 className="text-xl font-black mb-3 text-slate-900 leading-tight group-hover:text-[#F37021] transition-colors">{t(`serviceItems.${service.id}.title`)}</h4>
+                  <p className="text-slate-500 text-sm mb-8 leading-relaxed font-medium line-clamp-3">{t(`serviceItems.${service.id}.description`)}</p>
                   <div className="mt-auto pt-6 border-t border-slate-50 flex items-center justify-between">
                     <div className="flex gap-1">
-                      {service.tags.slice(0, 2).map(tag => (
+                      {(t(`serviceItems.${service.id}.tags`, { returnObjects: true }) || []).slice(0, 2).map(tag => (
                         <span key={tag} className="text-[9px] font-black uppercase tracking-widest text-slate-400 px-2 py-1 bg-slate-50 rounded">#{tag}</span>
                       ))}
                     </div>
@@ -836,8 +838,8 @@ const App = () => {
                       <LogoSVG accentColor={BUSINESS_LINES[selectedService.line.toUpperCase()].accent} size={24} />
                       {t(`businessLines.${selectedService.line}.name`)}
                     </div>
-                    <h3 className="text-4xl md:text-5xl font-black leading-none tracking-tight text-slate-900">{selectedService.title}</h3>
-                    <p className="text-slate-500 text-xl font-medium leading-relaxed">{selectedService.description}</p>
+                    <h3 className="text-4xl md:text-5xl font-black leading-none tracking-tight text-slate-900">{t(`serviceItems.${selectedService.id}.title`)}</h3>
+                    <p className="text-slate-500 text-xl font-medium leading-relaxed">{t(`serviceItems.${selectedService.id}.description`)}</p>
                   </div>
                   <div className="space-y-6">
                     <p className="font-black text-xs text-slate-400 uppercase tracking-[0.2em]">{t('services.valueTitle')}</p>
@@ -874,7 +876,7 @@ const App = () => {
                           </div>
                           <div className="min-w-0">
                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em] leading-none mb-1.5">{t(`businessLines.${rel.line}.name`)}</p>
-                            <p className="font-black text-slate-900 truncate group-hover:text-[#F37021] transition-colors">{rel.title}</p>
+                            <p className="font-black text-slate-900 truncate group-hover:text-[#F37021] transition-colors">{t(`serviceItems.${rel.id}.title`)}</p>
                           </div>
                           <ChevronRight className="ml-auto text-slate-300 group-hover:text-[#F37021] group-hover:translate-x-1 transition-all" size={20} />
                         </div>
