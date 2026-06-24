@@ -110,6 +110,11 @@
     "poweredBy": "Powered by",
     "poweredByCompany": "Alfonso Moreno LLC."
   },
+  "partners": {
+    "label": "Socios comerciales",
+    "title": "Alianzas que multiplican tu alcance",
+    "logoNote": "Logos pendientes de confirmación con socios comerciales."
+  },
   "video": {
     "muteLabel": "Silenciar",
     "unmuteLabel": "Activar sonido"

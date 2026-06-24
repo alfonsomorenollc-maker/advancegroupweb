@@ -110,6 +110,11 @@
     "poweredBy": "Powered by",
     "poweredByCompany": "Alfonso Moreno LLC."
   },
+  "partners": {
+    "label": "Business Partners",
+    "title": "Partnerships that multiply your reach",
+    "logoNote": "Logos pending confirmation with business partners."
+  },
   "video": {
     "muteLabel": "Mute",
     "unmuteLabel": "Unmute"

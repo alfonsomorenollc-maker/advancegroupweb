@@ -525,6 +525,64 @@ const App = () => {
               </div>
             </div>
           </section>
+
+          {/* BUSINESS PARTNERS */}
+          <section className="py-20 bg-white border-t border-slate-50">
+            <div className="max-w-7xl mx-auto px-4">
+              <div className="text-center mb-12">
+                <p className="text-xs font-black uppercase tracking-[0.25em] text-slate-400 mb-3">
+                  {t('partners.label')}
+                </p>
+                <h2 className="text-3xl font-black text-slate-900">{t('partners.title')}</h2>
+              </div>
+              <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16">
+                {[
+                  {
+                    name: 'Cartones del Caribe',
+                    logo: null,
+                    placeholder: 'CdC',
+                    desc: 'Socio de producción — cartón corrugado desde Punta Cana'
+                  },
+                  {
+                    name: 'Socio 2',
+                    logo: null,
+                    placeholder: 'S2',
+                    desc: 'Nombre del socio — descripción breve'
+                  },
+                  {
+                    name: 'Socio 3',
+                    logo: null,
+                    placeholder: 'S3',
+                    desc: 'Nombre del socio — descripción breve'
+                  },
+                  {
+                    name: 'Socio 4',
+                    logo: null,
+                    placeholder: 'S4',
+                    desc: 'Nombre del socio — descripción breve'
+                  },
+                ].map((partner) => (
+                  <div key={partner.name} className="relative group flex flex-col items-center gap-2">
+                    <div className="w-28 h-16 rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 flex items-center justify-center hover:border-[#F37021] transition-all cursor-default">
+                      {partner.logo ? (
+                        <img src={partner.logo} alt={partner.name} className="max-w-[90px] max-h-[48px] object-contain" />
+                      ) : (
+                        <span className="text-lg font-black text-slate-300">{partner.placeholder}</span>
+                      )}
+                    </div>
+                    <p className="text-xs font-bold text-slate-400 text-center max-w-[120px] leading-tight">{partner.name}</p>
+                    {/* Tooltip on hover */}
+                    <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 bg-slate-900 text-white text-xs p-2 rounded-xl opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-10 text-center">
+                      {partner.desc}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-center text-xs text-slate-300 mt-8 font-medium">
+                {t('partners.logoNote')}
+              </p>
+            </div>
+          </section>
         </>
       )}
 
