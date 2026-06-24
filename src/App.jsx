@@ -801,10 +801,6 @@ const App = () => {
             <div className="space-y-4">
               <p className="text-xs font-black uppercase tracking-widest text-slate-500">{t('footer.puertoRico')}</p>
               <p className="text-sm text-slate-400">{t('footer.serviceGuarantee')}</p>
-              <div className="pt-4 space-y-2">
-                <p className="text-xs font-black uppercase tracking-widest text-slate-500">{t('footer.licensesTitle')}</p>
-                <p className="text-xs text-slate-500 italic">{t('footer.licensesPlaceholder')}</p>
-              </div>
             </div>
           </div>
 
