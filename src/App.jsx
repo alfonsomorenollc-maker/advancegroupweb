@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import CookieBanner from './components/CookieBanner.jsx';
 import { db } from './firebase.js';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import {
@@ -777,6 +778,8 @@ const App = () => {
           {t('footer.poweredBy')} <span className="text-slate-400">{t('footer.poweredByCompany')}</span>
         </div>
       </footer>
+
+      <CookieBanner />
 
       {/* SERVICE MODAL */}
       {selectedService && (
