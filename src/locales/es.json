@@ -116,18 +116,11 @@
     "emailPolicy": "Política de Email Marketing",
     "puertoRico": "Puerto Rico",
     "serviceGuarantee": "Garantía de Servicio en 24 horas a los 78 municipios",
-    "licensesTitle": "Licencias y Registros",
-    "licensesPlaceholder": "[Pendiente: confirmar con asesoría legal los números de licencia/registro aplicables (DACO u otros)]",
     "eeoTitle": "Igualdad de Oportunidades de Empleo",
     "eeoText": "Advance Group LLC y sus compañías afiliadas son patronos con igualdad de oportunidades de empleo. Todas las decisiones de empleo se toman sin discriminación por razón de raza, color, religión, sexo, origen nacional, edad, discapacidad, estado civil, orientación sexual, identidad de género u otras categorías protegidas por la ley.",
     "copyright": "© 2025 ADVANCE GROUP. BUILT IN PUERTO RICO.",
     "poweredBy": "Powered by",
     "poweredByCompany": "Alfonso Moreno LLC."
-  },
-  "partners": {
-    "label": "Socios comerciales",
-    "title": "Alianzas que multiplican tu alcance",
-    "logoNote": "Logos pendientes de confirmación con socios comerciales."
   },
   "video": {
     "muteLabel": "Silenciar",
