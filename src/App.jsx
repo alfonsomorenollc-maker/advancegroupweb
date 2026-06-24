@@ -808,32 +808,75 @@ const App = () => {
       )}
 
       {/* FOOTER */}
-      <footer className="py-20 border-t border-slate-100 bg-white">
+      <footer className="bg-slate-900 text-white pt-20 pb-8">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-start gap-16 mb-20">
-            <div className="space-y-6 max-w-sm">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+
+            {/* Col 1: Brand */}
+            <div className="lg:col-span-1 space-y-6">
               <div className="flex items-center gap-3">
-                <LogoSVG accentColor={BRAND_COLORS.ORANGE} size={40} />
-                <span className="font-black text-2xl text-slate-900 tracking-tighter">ADVANCE GROUP</span>
+                <LogoSVG accentColor={BRAND_COLORS.ORANGE} size={36} />
+                <span className="font-black text-xl tracking-tighter">ADVANCE GROUP</span>
               </div>
-              <p className="text-slate-500 font-medium leading-relaxed">{t('footer.description')}</p>
+              <p className="text-slate-400 text-sm leading-relaxed">{t('footer.description')}</p>
+              <div className="space-y-1">
+                <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">{t('footer.contact')}</p>
+                <a href="tel:7876539000" className="text-sm text-slate-300 hover:text-[#F37021] transition-colors block">787-653-9000</a>
+                <a href="mailto:legal@advancegrouppr.com" className="text-sm text-slate-300 hover:text-[#F37021] transition-colors block">legal@advancegrouppr.com</a>
+                <p className="text-xs text-slate-500">Puerto Rico #1, Bo. Km 29.4, Caguas, PR 00725</p>
+              </div>
             </div>
-            <div className="flex gap-12 font-bold text-slate-600">
-              <div className="space-y-4">
-                <p className="text-xs uppercase tracking-widest text-slate-400">{t('footer.puertoRico')}</p>
-                <p className="text-sm">{t('footer.serviceGuarantee')}</p>
+
+            {/* Col 2: Company */}
+            <div className="space-y-4">
+              <p className="text-xs font-black uppercase tracking-widest text-slate-500">{t('footer.company')}</p>
+              <ul className="space-y-3">
+                <li><button onClick={() => setActiveSection('home')} className="text-sm text-slate-400 hover:text-white transition-colors">{t('footer.whoWeAre')}</button></li>
+                <li><button onClick={() => setActiveSection('services')} className="text-sm text-slate-400 hover:text-white transition-colors">{t('nav.solutions')}</button></li>
+                <li><button onClick={() => setActiveSection('contact')} className="text-sm text-slate-400 hover:text-white transition-colors">{t('footer.careers')}</button></li>
+              </ul>
+              <div className="pt-4 space-y-3">
+                <p className="text-xs font-black uppercase tracking-widest text-slate-500">{t('footer.social')}</p>
+                <a href="https://www.linkedin.com/company/advance-group-pr" target="_blank" rel="noopener noreferrer" className="text-sm text-slate-400 hover:text-white transition-colors block">LinkedIn</a>
+                <a href="https://www.instagram.com/advancegrouppr" target="_blank" rel="noopener noreferrer" className="text-sm text-slate-400 hover:text-white transition-colors block">Instagram</a>
               </div>
-              <div className="space-y-4">
-                <p className="text-xs uppercase tracking-widest text-slate-400">{t('footer.social')}</p>
-                <p className="text-sm underline cursor-pointer">LinkedIn</p>
-                <p className="text-sm underline cursor-pointer">Instagram</p>
+            </div>
+
+            {/* Col 3: Legal */}
+            <div className="space-y-4">
+              <p className="text-xs font-black uppercase tracking-widest text-slate-500">{t('footer.legalTitle')}</p>
+              <ul className="space-y-3">
+                <li><a href="/terminos" className="text-sm text-slate-400 hover:text-white transition-colors">{t('footer.terms')}</a></li>
+                <li><a href="/privacidad" className="text-sm text-slate-400 hover:text-white transition-colors">{t('footer.privacy')}</a></li>
+                <li><a href="/cookies" className="text-sm text-slate-400 hover:text-white transition-colors">{t('footer.cookies')}</a></li>
+                <li><a href="/politica-sms" className="text-sm text-slate-400 hover:text-white transition-colors">{t('footer.smsPolicy')}</a></li>
+                <li><a href="/email-marketing" className="text-sm text-slate-400 hover:text-white transition-colors">{t('footer.emailPolicy')}</a></li>
+              </ul>
+            </div>
+
+            {/* Col 4: Puerto Rico + Licenses */}
+            <div className="space-y-4">
+              <p className="text-xs font-black uppercase tracking-widest text-slate-500">{t('footer.puertoRico')}</p>
+              <p className="text-sm text-slate-400">{t('footer.serviceGuarantee')}</p>
+              <div className="pt-4 space-y-2">
+                <p className="text-xs font-black uppercase tracking-widest text-slate-500">{t('footer.licensesTitle')}</p>
+                <p className="text-xs text-slate-500 italic">{t('footer.licensesPlaceholder')}</p>
               </div>
             </div>
           </div>
-          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 pt-12 border-t border-slate-50">{t('footer.copyright')}</p>
-        </div>
-        <div className="text-center py-3 border-t border-slate-800 text-slate-500 text-xs">
-          {t('footer.poweredBy')} <span className="text-slate-400">{t('footer.poweredByCompany')}</span>
+
+          {/* EEO Statement */}
+          <div className="border-t border-slate-800 pt-8 mb-6">
+            <p className="text-xs text-slate-500 leading-relaxed max-w-3xl">
+              <span className="font-bold text-slate-400">{t('footer.eeoTitle')}:</span>{' '}{t('footer.eeoText')}
+            </p>
+          </div>
+
+          {/* Copyright */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-t border-slate-800 pt-6">
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">{t('footer.copyright')}</p>
+            <p className="text-xs text-slate-600">{t('footer.poweredBy')} <span className="text-slate-500">{t('footer.poweredByCompany')}</span></p>
+          </div>
         </div>
       </footer>
 
