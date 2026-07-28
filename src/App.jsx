@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import CookieBanner from './components/CookieBanner.jsx';
 import { db } from './firebase.js';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, doc, getDoc, getDocs } from 'firebase/firestore';
 import {
   Truck,
   Search,
@@ -17,8 +17,359 @@ import {
   Handshake,
   BarChart3,
   Users,
-  Store
+  Store,
+  Target,
+  ShieldCheck,
+  Rocket,
+  HeartHandshake,
+  MapPin,
+  Warehouse,
+  Package
 } from 'lucide-react';
+
+// ─── "SOBRE NOSOTROS" — contenido editable desde el CMS de AdvanceOS ────────
+// El contenido vive en Firestore (mismo proyecto que el ERP):
+//   orgs/org1/cms_content/page_nosotros
+// Se edita en app.advancegrouppr.com/cms/paginas/nosotros. Aquí lo LEEMOS y lo
+// fusionamos sobre estos defaults (si un campo falta, cae al default).
+const NOSOTROS_FALLBACK_ES = {
+  contactEmail: 'info@advancegrouppr.com',
+  hero: {
+    eyebrow: 'Sobre nosotros',
+    title: 'Movemos a Puerto Rico con logística, empaque y soluciones B2B de punta a punta.',
+    subtitle: 'En Advance Group combinamos una flota moderna, almacenes estratégicos y tecnología propia para que tu producto llegue donde tiene que llegar — a tiempo, completo y en perfectas condiciones.',
+    ctaSecondaryLabel: 'Contáctanos',
+  },
+  stats: [
+    { value: '74', label: 'Vehículos en flota' },
+    { value: '3', label: 'Almacenes en Caguas' },
+    { value: '100%', label: 'Cobertura de la isla' },
+    { value: 'A la medida', label: 'Empaque corrugado' },
+  ],
+  mission: {
+    eyebrow: 'Nuestra misión',
+    heading: 'Ser el socio logístico más confiable de Puerto Rico.',
+    body: 'Nacimos para resolver un problema real: la distribución en la isla es compleja, y las empresas necesitan un aliado que entienda el terreno. Desde entonces hemos crecido hasta convertirnos en una operación integrada de logística, almacenaje y empaque que atiende a clientes B2B en toda la isla.',
+  },
+  quienesSomos: {
+    heading: 'Quiénes somos',
+    paragraphs: [
+      'Advance Group es un grupo de empresas de logística y distribución con base en Caguas, Puerto Rico. Operamos una flota de **74 vehículos** —incluyendo unidades refrigeradas y con capacidades especiales— y una red de **3 almacenes** que nos permiten mover inventario con rapidez y precisión.',
+      'Complementamos el servicio con nuestra línea de empaque de **cartón corrugado**, con soluciones a la medida de cada cliente y un motor de selección por margen.',
+      'Todo esto corre sobre **AdvanceOS**, el sistema operativo interno que construimos para orquestar cada cotización, orden, ruta y entrega en tiempo real.',
+    ],
+  },
+  linesHeading: 'Lo que hacemos',
+  lines: [
+    { title: 'Logística', body: 'Distribución especializada en toda la isla, con entregas a tiempo incluyendo Vieques y Culebra. Cadena de frío, white glove y servicios médicos.' },
+    { title: 'Almacenaje', body: 'Tres almacenes en Caguas con zonas refrigeradas, secas y especializadas. Servicios 3PL con conteo cíclico e inventario en tiempo real.' },
+    { title: 'Empaque', body: 'Cartón corrugado a la medida, con motor de selección por margen para optimizar el costo de empaque de cada cliente.' },
+  ],
+  valuesHeading: 'Nuestros valores',
+  values: [
+    { title: 'Confiabilidad', body: 'Cumplimos lo que prometemos. Cada entrega, cada orden y cada cliente reciben el mismo compromiso de excelencia operacional.' },
+    { title: 'Innovación', body: 'Construimos nuestro propio sistema operativo (AdvanceOS) para mover cada pedido con tecnología, no con papel.' },
+    { title: 'Cercanía', body: 'Somos de aquí. Conocemos cada zona de Puerto Rico, desde el área metro hasta Vieques y Culebra.' },
+    { title: 'Equipo', body: 'Nuestra gente es el motor. Invertimos en capacitación, certificaciones y en un ambiente donde crecer.' },
+  ],
+  cta: {
+    heading: '¿Listo para trabajar con nosotros?',
+    body: 'Ya sea que busques un socio logístico o quieras formar parte del equipo, estamos para conversar.',
+    ctaSecondaryLabel: 'Escríbenos',
+  },
+};
+
+const NOSOTROS_FALLBACK_EN = {
+  contactEmail: 'info@advancegrouppr.com',
+  hero: {
+    eyebrow: 'About us',
+    title: 'We move Puerto Rico with end-to-end logistics, packaging, and B2B solutions.',
+    subtitle: 'At Advance Group we combine a modern fleet, strategic warehouses, and our own technology so your product gets where it needs to go — on time, complete, and in perfect condition.',
+    ctaSecondaryLabel: 'Contact us',
+  },
+  stats: [
+    { value: '74', label: 'Vehicles in fleet' },
+    { value: '3', label: 'Warehouses in Caguas' },
+    { value: '100%', label: 'Coverage across the island' },
+    { value: 'Custom', label: 'Corrugated packaging' },
+  ],
+  mission: {
+    eyebrow: 'Our mission',
+    heading: "To be Puerto Rico's most reliable logistics partner.",
+    body: "We were born to solve a real problem: distribution on the island is complex, and companies need a partner who knows the terrain. Since then we've grown into an integrated logistics, warehousing, and packaging operation serving B2B clients across the island.",
+  },
+  quienesSomos: {
+    heading: 'Who we are',
+    paragraphs: [
+      'Advance Group is a logistics and distribution group based in Caguas, Puerto Rico. We operate a fleet of **74 vehicles** —including refrigerated and specialty-capable units— and a network of **3 warehouses** that let us move inventory quickly and precisely.',
+      'We complement our service with our **corrugated cardboard** packaging line, with custom solutions for each client and a margin-based selection engine.',
+      'All of this runs on **AdvanceOS**, the internal operating system we built to orchestrate every quote, order, route, and delivery in real time.',
+    ],
+  },
+  linesHeading: 'What we do',
+  lines: [
+    { title: 'Logistics', body: 'Specialized distribution across the island, with on-time delivery including Vieques and Culebra. Cold chain, white glove, and medical services.' },
+    { title: 'Warehousing', body: 'Three warehouses in Caguas with refrigerated, dry, and specialized zones. 3PL services with cycle counting and real-time inventory.' },
+    { title: 'Packaging', body: "Custom corrugated cardboard, with a margin-based selection engine to optimize each client's packaging cost." },
+  ],
+  valuesHeading: 'Our values',
+  values: [
+    { title: 'Reliability', body: 'We deliver on our promises. Every delivery, every order, and every client receives the same commitment to operational excellence.' },
+    { title: 'Innovation', body: 'We built our own operating system (AdvanceOS) to move every order with technology, not paper.' },
+    { title: 'Closeness', body: "We're from here. We know every zone of Puerto Rico, from the metro area to Vieques and Culebra." },
+    { title: 'Team', body: 'Our people are the engine. We invest in training, certifications, and an environment where people can grow.' },
+  ],
+  cta: {
+    heading: 'Ready to work with us?',
+    body: "Whether you're looking for a logistics partner or want to join the team, we're here to talk.",
+    ctaSecondaryLabel: 'Write to us',
+  },
+};
+
+const NOSOTROS_STAT_ICONS = [Truck, Warehouse, MapPin, Package];
+const NOSOTROS_LINE_ICONS = [Truck, Warehouse, Package];
+const NOSOTROS_VALUE_ICONS = [ShieldCheck, Rocket, HeartHandshake, Users];
+
+// Fusiona el doc del CMS sobre los defaults del idioma pedido. Español = nivel
+// superior del doc; Inglés = doc.en. Campo vacío → default.
+function mergeAbout(d, lang) {
+  d = d || {};
+  const D = lang === 'en' ? NOSOTROS_FALLBACK_EN : NOSOTROS_FALLBACK_ES;
+  const src = (lang === 'en' ? d.en : d) || {};
+  const s = (v, def) => (typeof v === 'string' && v.trim() ? v : def);
+  return {
+    contactEmail: s(src.contactEmail, D.contactEmail),
+    hero: {
+      eyebrow: s(src.hero && src.hero.eyebrow, D.hero.eyebrow),
+      title: s(src.hero && src.hero.title, D.hero.title),
+      subtitle: s(src.hero && src.hero.subtitle, D.hero.subtitle),
+      ctaSecondaryLabel: s(src.hero && src.hero.ctaSecondaryLabel, D.hero.ctaSecondaryLabel),
+    },
+    stats: D.stats.map((def, i) => ({
+      value: s(src.stats && src.stats[i] && src.stats[i].value, def.value),
+      label: s(src.stats && src.stats[i] && src.stats[i].label, def.label),
+    })),
+    mission: {
+      eyebrow: s(src.mission && src.mission.eyebrow, D.mission.eyebrow),
+      heading: s(src.mission && src.mission.heading, D.mission.heading),
+      body: s(src.mission && src.mission.body, D.mission.body),
+    },
+    quienesSomos: {
+      heading: s(src.quienesSomos && src.quienesSomos.heading, D.quienesSomos.heading),
+      paragraphs: D.quienesSomos.paragraphs.map((def, i) =>
+        s(src.quienesSomos && src.quienesSomos.paragraphs && src.quienesSomos.paragraphs[i], def),
+      ),
+    },
+    linesHeading: s(src.linesHeading, D.linesHeading),
+    lines: D.lines.map((def, i) => ({
+      title: s(src.lines && src.lines[i] && src.lines[i].title, def.title),
+      body: s(src.lines && src.lines[i] && src.lines[i].body, def.body),
+    })),
+    valuesHeading: s(src.valuesHeading, D.valuesHeading),
+    values: D.values.map((def, i) => ({
+      title: s(src.values && src.values[i] && src.values[i].title, def.title),
+      body: s(src.values && src.values[i] && src.values[i].body, def.body),
+    })),
+    cta: {
+      heading: s(src.cta && src.cta.heading, D.cta.heading),
+      body: s(src.cta && src.cta.body, D.cta.body),
+      ctaSecondaryLabel: s(src.cta && src.cta.ctaSecondaryLabel, D.cta.ctaSecondaryLabel),
+    },
+  };
+}
+
+// Render de **negrita** en línea (seguro: solo nodos de texto).
+function renderBold(text) {
+  if (!text) return null;
+  return String(text).split(/(\*\*[^*]+\*\*)/g).map((p, i) =>
+    p.startsWith('**') && p.endsWith('**')
+      ? <strong key={i} className="font-bold text-slate-700">{p.slice(2, -2)}</strong>
+      : <React.Fragment key={i}>{p}</React.Fragment>,
+  );
+}
+
+// ─── "NUESTRO EQUIPO" — editable desde el CMS ──────────────────────────────
+// Doc: orgs/org1/cms_content/page_team. Campos traducibles como {es, en}.
+const TEAM_FALLBACK = {
+  heading: { es: 'Nuestro Equipo', en: 'Our Team' },
+  intro: {
+    es: 'Detrás de cada entrega hay un equipo que conoce el terreno y ejecuta con excelencia.',
+    en: 'Behind every delivery is a team that knows the terrain and executes with excellence.',
+  },
+  founder: {
+    name: 'José Nieves',
+    photoUrl: '',
+    label: { es: 'CEO y Fundador', en: 'CEO & Founder' },
+    bio: {
+      es: 'José Nieves es el fundador y CEO de Advance Group. Lo que comenzó como una operación de distribución se ha convertido, bajo su liderazgo, en un ecosistema integrado de logística, almacenaje, empaque y soluciones de mercado que hoy sirve a marcas en todo Puerto Rico. Su visión sigue siendo la misma con la que empezó: darle a cada cliente un socio que entienda el terreno y cumpla lo que promete.',
+      en: 'José Nieves is the founder and CEO of Advance Group. What began as a distribution operation has grown, under his leadership, into an integrated ecosystem of logistics, warehousing, packaging, and go-to-market solutions that today serves brands across Puerto Rico. His vision remains the one he started with: to give every client a partner who understands the terrain and delivers on every promise.',
+    },
+  },
+  membersHeading: { es: 'Jefes de Departamento', en: 'Department Heads' },
+  members: [
+    { name: 'Por definir', photoUrl: '', title: { es: 'Director de Operaciones', en: 'Operations Director' } },
+    { name: 'Por definir', photoUrl: '', title: { es: 'Gerente de Almacén', en: 'Warehouse Manager' } },
+    { name: 'Por definir', photoUrl: '', title: { es: 'Líder Comercial', en: 'Commercial Lead' } },
+    { name: 'Por definir', photoUrl: '', title: { es: 'Finanzas', en: 'Finance' } },
+  ],
+};
+
+// Elige el valor del idioma de un campo {es,en}, con fallback.
+const pickLang = (obj, lang, def) => {
+  if (obj && typeof obj === 'object') {
+    const v = obj[lang];
+    if (typeof v === 'string' && v.trim()) return v;
+    const other = obj[lang === 'en' ? 'es' : 'en'];
+    if (typeof other === 'string' && other.trim()) return other;
+  }
+  return def;
+};
+
+function mergeTeam(d, lang) {
+  d = d || {};
+  const F = TEAM_FALLBACK;
+  const nonEmpty = (v, def) => (typeof v === 'string' && v.trim() ? v : def);
+  const members = Array.isArray(d.members) && d.members.length
+    ? d.members
+    : F.members;
+  return {
+    heading: pickLang(d.heading, lang, pickLang(F.heading, lang, 'Nuestro Equipo')),
+    intro: pickLang(d.intro, lang, pickLang(F.intro, lang, '')),
+    founder: {
+      name: nonEmpty(d.founder && d.founder.name, F.founder.name),
+      photoUrl: (d.founder && d.founder.photoUrl) || '',
+      label: pickLang(d.founder && d.founder.label, lang, pickLang(F.founder.label, lang, '')),
+      bio: pickLang(d.founder && d.founder.bio, lang, pickLang(F.founder.bio, lang, '')),
+    },
+    membersHeading: pickLang(d.membersHeading, lang, pickLang(F.membersHeading, lang, 'Jefes de Departamento')),
+    members: members.map((m) => ({
+      name: nonEmpty(m && m.name, 'Por definir'),
+      photoUrl: (m && m.photoUrl) || '',
+      title: pickLang(m && m.title, lang, ''),
+    })),
+  };
+}
+
+// Iniciales para el avatar cuando no hay foto.
+function initials(name) {
+  const parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return '?';
+  return (parts[0][0] + (parts[1] ? parts[1][0] : '')).toUpperCase();
+}
+
+// Texto bilingüe de un doc de contenido (blog/noticias/eventos/empleos), que usa
+// el patrón `campo_es` / `campo_en`.
+const cmsText = (item, base, lang) => {
+  const v = item[`${base}_${lang}`];
+  if (typeof v === 'string' && v.trim()) return v;
+  const other = item[`${base}_${lang === 'en' ? 'es' : 'en'}`];
+  return (typeof other === 'string' && other.trim()) ? other : '';
+};
+
+// Sub-pestañas dentro de "Nosotros" (orden pedido por el owner).
+const ABOUT_TABS = [
+  { key: 'about', i18n: 'about.tabOverview' },
+  { key: 'team', i18n: 'about.tabTeam' },
+  { key: 'blog', i18n: 'about.tabBlog' },
+  { key: 'news', i18n: 'about.tabNews' },
+  { key: 'events', i18n: 'about.tabEvents' },
+  { key: 'jobs', i18n: 'about.tabJobs' },
+];
+
+// Avatar con foto o iniciales.
+function Avatar({ name, photoUrl, className }) {
+  if (photoUrl) {
+    return <img src={photoUrl} alt={name} className={`${className} object-cover`} />;
+  }
+  return (
+    <div className={`${className} flex items-center justify-center bg-orange-100 text-[#F37021] font-black`}>
+      {initials(name)}
+    </div>
+  );
+}
+
+// Sección "Nuestro Equipo" (team ya viene fusionado para el idioma activo).
+function TeamSection({ team }) {
+  return (
+    <div>
+      <section className="pt-20 pb-8 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="w-12 h-1.5 bg-[#F37021] rounded-full" />
+          <h2 className="mt-4 text-4xl md:text-5xl font-black tracking-tight text-slate-900">{team.heading}</h2>
+          {team.intro && <p className="mt-4 max-w-2xl text-lg text-slate-500 font-medium">{team.intro}</p>}
+        </div>
+      </section>
+
+      {/* Fundador */}
+      <section className="px-4 pb-16">
+        <div className="max-w-7xl mx-auto grid md:grid-cols-[280px_1fr] gap-10 items-start rounded-[2.5rem] bg-slate-50 p-8 md:p-12">
+          <div className="mx-auto md:mx-0">
+            <Avatar name={team.founder.name} photoUrl={team.founder.photoUrl} className="w-56 h-56 rounded-[2rem] text-5xl" />
+          </div>
+          <div>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-50 text-[#F37021] text-xs font-black tracking-widest uppercase">
+              {team.founder.label}
+            </div>
+            <h3 className="mt-4 text-3xl font-black text-slate-900">{team.founder.name}</h3>
+            <p className="mt-4 text-lg text-slate-600 leading-relaxed">{team.founder.bio}</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Jefes de departamento */}
+      <section className="px-4 pb-24">
+        <div className="max-w-7xl mx-auto">
+          <h3 className="text-2xl font-black text-slate-900 mb-8">{team.membersHeading}</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {team.members.map((m, i) => (
+              <div key={i} className="text-center">
+                <Avatar name={m.name} photoUrl={m.photoUrl} className="w-full aspect-square rounded-3xl text-4xl mb-4" />
+                <p className="font-black text-slate-900">{m.name}</p>
+                {m.title && <p className="text-sm font-bold text-[#F37021]">{m.title}</p>}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+// Grilla de contenido editorial (blog/noticias/eventos/empleos) desde el CMS.
+function ContentGrid({ title, items, lang, emptyText }) {
+  return (
+    <section className="px-4 pt-16 pb-24">
+      <div className="max-w-7xl mx-auto">
+        <div className="w-12 h-1.5 bg-[#F37021] rounded-full" />
+        <h2 className="mt-4 mb-10 text-4xl font-black tracking-tight text-slate-900">{title}</h2>
+        {!items.length ? (
+          <p className="text-slate-400 font-medium">{emptyText}</p>
+        ) : (
+          <div className="grid md:grid-cols-3 gap-8">
+            {items.map((item) => {
+              const title2 = cmsText(item, 'title', lang);
+              const excerpt = cmsText(item, 'excerpt', lang);
+              const img = item.featuredImageUrl;
+              const date = item.publishedAt && item.publishedAt.seconds
+                ? new Date(item.publishedAt.seconds * 1000).toLocaleDateString(lang === 'en' ? 'en-US' : 'es-PR', { year: 'numeric', month: 'long', day: 'numeric' })
+                : '';
+              return (
+                <div key={item.id} className="rounded-[2rem] border border-slate-100 bg-white overflow-hidden hover:shadow-2xl hover:shadow-orange-500/10 transition-all">
+                  {img && <img src={img} alt={title2} className="w-full h-48 object-cover" />}
+                  <div className="p-6">
+                    {date && <p className="text-xs font-black uppercase tracking-widest text-[#F37021]">{date}</p>}
+                    <h3 className="mt-2 text-xl font-black text-slate-900">{title2}</h3>
+                    {excerpt && <p className="mt-2 text-slate-500 font-medium leading-relaxed">{excerpt}</p>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
 
 // ─── CONSENTIMIENTO SMS — TCPA ────────────────────────────────────────────
 // Versionar este texto: cada cambio = nuevo identificador.
@@ -244,6 +595,46 @@ const App = () => {
   const [formStatus, setFormStatus] = React.useState('idle'); // idle|submitting|success|error
   const [selectedServiceKeys, setSelectedServiceKeys] = React.useState([]);
   const [heroSlide, setHeroSlide] = React.useState(0);
+  // Sub-pestaña dentro de "Nosotros".
+  const [aboutTab, setAboutTab] = React.useState('about');
+  // "Sobre nosotros" + "Nuestro Equipo" + contenido editorial — leídos del CMS.
+  const [aboutDoc, setAboutDoc] = React.useState(null);
+  const [teamDoc, setTeamDoc] = React.useState(null);
+  const [cmsList, setCmsList] = React.useState([]);
+  const [siteImages, setSiteImages] = React.useState({});
+  const [sectionVisible, setSectionVisible] = React.useState({});
+  React.useEffect(() => {
+    getDoc(doc(db, 'orgs', 'org1', 'cms_content', 'page_nosotros'))
+      .then((snap) => { if (snap.exists()) setAboutDoc(snap.data()); })
+      .catch(() => {});
+    getDoc(doc(db, 'orgs', 'org1', 'cms_content', 'page_team'))
+      .then((snap) => { if (snap.exists()) setTeamDoc(snap.data()); })
+      .catch(() => {});
+    getDoc(doc(db, 'orgs', 'org1', 'cms_content', 'site_images'))
+      .then((snap) => { if (snap.exists()) setSiteImages(snap.data().slots || {}); })
+      .catch(() => {});
+    getDoc(doc(db, 'orgs', 'org1', 'cms_content', 'site_sections'))
+      .then((snap) => { if (snap.exists()) setSectionVisible(snap.data().visible || {}); })
+      .catch(() => {});
+    getDocs(collection(db, 'orgs', 'org1', 'cms_content'))
+      .then((snap) => setCmsList(snap.docs.map((x) => ({ id: x.id, ...x.data() }))))
+      .catch(() => {});
+  }, []);
+  const siteImg = (key) => (siteImages && siteImages[key]) || '';
+  // Una sub-sección se muestra solo si el owner la activó en el CMS. "Nosotros"
+  // (overview) siempre visible.
+  const sectionOn = (key) => key === 'about' || (sectionVisible && sectionVisible[key] === true);
+  const uiLang = i18n.language === 'en' ? 'en' : 'es';
+  const aboutContent = mergeAbout(aboutDoc, uiLang);
+  const teamContent = mergeTeam(teamDoc, uiLang);
+  // Contenido editorial publicado por tipo.
+  const contentByType = (type) => cmsList
+    .filter((c) => c.type === type && c.status === 'published')
+    .sort((a, b) => {
+      const ta = a.publishedAt && a.publishedAt.seconds ? a.publishedAt.seconds : 0;
+      const tb = b.publishedAt && b.publishedAt.seconds ? b.publishedAt.seconds : 0;
+      return tb - ta;
+    });
 
   // Consentimiento
   const [termsAccepted, setTermsAccepted] = React.useState(false);
@@ -366,6 +757,7 @@ const App = () => {
           <div className="hidden md:flex items-center gap-8 font-bold text-sm uppercase tracking-widest text-slate-500">
             <button onClick={() => setActiveSection('home')} className={`hover:text-[#F37021] transition-colors ${activeSection === 'home' ? 'text-[#F37021]' : ''}`}>{t('nav.home')}</button>
             <button onClick={() => setActiveSection('services')} className={`hover:text-[#F37021] transition-colors ${activeSection === 'services' ? 'text-[#F37021]' : ''}`}>{t('nav.solutions')}</button>
+            <button onClick={() => { setActiveSection('about'); setAboutTab('about'); }} className={`hover:text-[#F37021] transition-colors ${activeSection === 'about' ? 'text-[#F37021]' : ''}`}>{t('nav.about')}</button>
             <button onClick={() => setActiveSection('contact')} className={`hover:text-[#F37021] transition-colors ${activeSection === 'contact' ? 'text-[#F37021]' : ''}`}>{t('nav.contact')}</button>
 
             {/* Language toggle */}
@@ -531,6 +923,164 @@ const App = () => {
         </>
       )}
 
+      {/* NOSOTROS */}
+      {activeSection === 'about' && (
+        <div className="pt-20">
+          {/* Sub-navegación de Nosotros */}
+          <div className="border-b bg-white/95 backdrop-blur sticky top-20 z-40">
+            <div className="max-w-7xl mx-auto px-4 flex gap-1 overflow-x-auto">
+              {ABOUT_TABS.filter((tab) => sectionOn(tab.key)).map((tab) => (
+                <button
+                  key={tab.key}
+                  onClick={() => setAboutTab(tab.key)}
+                  className={`px-4 py-4 text-xs font-black uppercase tracking-widest whitespace-nowrap border-b-2 transition-colors ${aboutTab === tab.key ? 'border-[#F37021] text-[#F37021]' : 'border-transparent text-slate-400 hover:text-slate-700'}`}
+                >
+                  {t(tab.i18n)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {aboutTab === 'about' && (
+          <>
+          {/* Hero */}
+          <section className="pt-16 pb-16 px-4">
+            <div className="max-w-7xl mx-auto">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-50 text-[#F37021] text-xs font-black tracking-widest uppercase">
+                <Handshake size={14} /> {aboutContent.hero.eyebrow}
+              </div>
+              <h1 className="mt-6 max-w-4xl text-5xl md:text-6xl font-black tracking-tight text-slate-900 leading-[1.03]">
+                {aboutContent.hero.title}
+              </h1>
+              <p className="mt-6 max-w-2xl text-xl text-slate-500 leading-relaxed font-medium">
+                {aboutContent.hero.subtitle}
+              </p>
+              <button onClick={() => setActiveSection('contact')} className="mt-8 inline-flex items-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-xl font-bold hover:bg-[#F37021] transition-all transform hover:-translate-y-1 shadow-xl">
+                {aboutContent.hero.ctaSecondaryLabel} <ArrowRight size={20} />
+              </button>
+              {siteImg('aboutHero') && (
+                <img src={siteImg('aboutHero')} alt="" className="mt-12 w-full h-64 md:h-80 object-cover rounded-[2.5rem] border-8 border-white shadow-2xl" />
+              )}
+            </div>
+          </section>
+
+          {/* Estadísticas */}
+          <section className="px-4 pb-20">
+            <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8">
+              {aboutContent.stats.map((s, i) => {
+                const Icon = NOSOTROS_STAT_ICONS[i] || Package;
+                return (
+                  <div key={i} className="border-l-4 border-[#F37021] pl-5">
+                    <Icon className="text-[#F37021]" size={28} />
+                    <p className="mt-3 text-4xl font-black text-slate-900">{s.value}</p>
+                    <p className="mt-1 text-sm font-bold text-slate-400">{s.label}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* Misión + Quiénes somos */}
+          <section className="px-4 py-24 bg-slate-50">
+            <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-start">
+              <div>
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-50 text-[#F37021] text-xs font-black tracking-widest uppercase">
+                  <Target size={14} /> {aboutContent.mission.eyebrow}
+                </div>
+                <h2 className="mt-5 text-4xl font-black tracking-tight text-slate-900">{aboutContent.mission.heading}</h2>
+                <p className="mt-5 text-lg text-slate-500 leading-relaxed font-medium">{aboutContent.mission.body}</p>
+              </div>
+              <div>
+                <h3 className="text-2xl font-black text-slate-900">{aboutContent.quienesSomos.heading}</h3>
+                <div className="mt-4 space-y-4 text-slate-500 font-medium leading-relaxed">
+                  {aboutContent.quienesSomos.paragraphs.map((p, i) => (
+                    <p key={i}>{renderBold(p)}</p>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {siteImg('aboutMission') && (
+            <section className="px-4 pb-8">
+              <div className="max-w-7xl mx-auto">
+                <img src={siteImg('aboutMission')} alt="" className="w-full h-72 md:h-96 object-cover rounded-[2.5rem]" />
+              </div>
+            </section>
+          )}
+
+          {/* Lo que hacemos */}
+          <section className="px-4 py-24">
+            <div className="max-w-7xl mx-auto">
+              <div className="w-12 h-1.5 bg-[#F37021] rounded-full" />
+              <h2 className="mt-4 text-4xl font-black tracking-tight text-slate-900">{aboutContent.linesHeading}</h2>
+              <div className="mt-12 grid md:grid-cols-3 gap-8">
+                {aboutContent.lines.map((l, i) => {
+                  const Icon = NOSOTROS_LINE_ICONS[i] || Package;
+                  return (
+                    <div key={i} className="p-10 rounded-[2.5rem] bg-white border border-slate-100 hover:shadow-2xl hover:shadow-orange-500/10 transition-all">
+                      <div className="inline-flex p-3 rounded-2xl bg-orange-50 text-[#F37021]"><Icon size={24} /></div>
+                      <h3 className="mt-6 text-2xl font-black text-slate-900">{l.title}</h3>
+                      <p className="mt-3 text-slate-500 leading-relaxed font-medium">{l.body}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+
+          {/* Valores */}
+          <section className="px-4 pb-24">
+            <div className="max-w-7xl mx-auto">
+              <div className="w-12 h-1.5 bg-[#F37021] rounded-full" />
+              <h2 className="mt-4 text-4xl font-black tracking-tight text-slate-900">{aboutContent.valuesHeading}</h2>
+              <div className="mt-12 grid sm:grid-cols-2 gap-6">
+                {aboutContent.values.map((v, i) => {
+                  const Icon = NOSOTROS_VALUE_ICONS[i] || ShieldCheck;
+                  return (
+                    <div key={i} className="flex gap-5 p-8 rounded-3xl bg-white border border-slate-100">
+                      <div className="w-14 h-14 flex-shrink-0 rounded-2xl bg-orange-50 flex items-center justify-center">
+                        <Icon className="text-[#F37021]" size={26} />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-black text-slate-900">{v.title}</h3>
+                        <p className="mt-2 text-slate-500 font-medium leading-relaxed">{v.body}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+
+          {/* CTA */}
+          <section className="px-4 pb-28">
+            <div className="max-w-7xl mx-auto">
+              <div className="bg-slate-900 rounded-[3rem] p-12 md:p-16 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-1/2 h-full bg-[#F37021]/20 blur-[100px]" />
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+                  <div>
+                    <h2 className="text-3xl md:text-4xl font-black text-white">{aboutContent.cta.heading}</h2>
+                    <p className="mt-3 max-w-xl text-slate-300 font-medium leading-relaxed">{aboutContent.cta.body}</p>
+                  </div>
+                  <button onClick={() => setActiveSection('contact')} className="flex-shrink-0 inline-flex items-center gap-2 bg-[#F37021] text-white px-8 py-4 rounded-xl font-bold hover:bg-[#d65d18] transition-all shadow-xl">
+                    {aboutContent.cta.ctaSecondaryLabel} <ArrowRight size={20} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+          </>
+          )}
+
+          {aboutTab === 'team' && sectionOn('team') && <TeamSection team={teamContent} />}
+          {aboutTab === 'blog' && sectionOn('blog') && <ContentGrid title={t('about.tabBlog')} items={contentByType('blog')} lang={uiLang} emptyText={t('about.emptyBlog')} />}
+          {aboutTab === 'news' && sectionOn('news') && <ContentGrid title={t('about.tabNews')} items={contentByType('noticias')} lang={uiLang} emptyText={t('about.emptyNews')} />}
+          {aboutTab === 'events' && sectionOn('events') && <ContentGrid title={t('about.tabEvents')} items={contentByType('eventos')} lang={uiLang} emptyText={t('about.emptyEvents')} />}
+          {aboutTab === 'jobs' && sectionOn('jobs') && <ContentGrid title={t('about.tabJobs')} items={contentByType('empleos')} lang={uiLang} emptyText={t('about.emptyJobs')} />}
+        </div>
+      )}
+
       {/* SERVICES */}
       {activeSection === 'services' && (
         <section className="pt-32 pb-24 px-4 min-h-screen">
@@ -557,7 +1107,10 @@ const App = () => {
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredServices.map((service) => (
-                <div key={service.id} onClick={() => setSelectedService(service)} className="bg-white p-8 rounded-[2rem] border border-slate-100 hover:border-orange-200 hover:shadow-2xl hover:shadow-orange-500/5 transition-all cursor-pointer group flex flex-col h-full">
+                <div key={service.id} onClick={() => setSelectedService(service)} className="bg-white p-8 rounded-[2rem] border border-slate-100 hover:border-orange-200 hover:shadow-2xl hover:shadow-orange-500/5 transition-all cursor-pointer group flex flex-col h-full overflow-hidden">
+                  {siteImg(`service_${service.id}`) && (
+                    <img src={siteImg(`service_${service.id}`)} alt="" className="-mx-8 -mt-8 mb-6 h-40 w-[calc(100%+4rem)] max-w-none object-cover" />
+                  )}
                   <div className="flex justify-between items-start mb-6">
                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${BUSINESS_LINES[service.line.toUpperCase()].bg}`}>
                       {React.createElement(BUSINESS_LINES[service.line.toUpperCase()].icon, { className: `w-6 h-6 ${BUSINESS_LINES[service.line.toUpperCase()].color}` })}
@@ -894,3 +1447,6 @@ const App = () => {
 };
 
 export default App;
+
+
+

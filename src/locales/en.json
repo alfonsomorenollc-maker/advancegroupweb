@@ -2,8 +2,21 @@
   "nav": {
     "home": "Home",
     "solutions": "Solutions",
+    "about": "About Us",
     "contact": "Contact",
     "quote": "Get a quote"
+  },
+  "about": {
+    "tabOverview": "About",
+    "tabTeam": "Our Team",
+    "tabBlog": "Blog",
+    "tabNews": "News",
+    "tabEvents": "Events",
+    "tabJobs": "Careers",
+    "emptyBlog": "We'll publish articles here soon.",
+    "emptyNews": "We'll share news here soon.",
+    "emptyEvents": "We'll announce events here soon.",
+    "emptyJobs": "No open positions at the moment."
   },
   "hero": {
     "description": "At Advance Group, we don't just distribute products; we act as your strategic partner to position and scale your brand in Puerto Rico and beyond.",
@@ -12,7 +25,7 @@
     "strategicPartnersTitle": "Strategic Partners",
     "strategicPartnersDesc": "We bring your product to market with success and high-level execution.",
     "slides": [
-      { "tag": "Advance Logistics – 24h island-wide", "h1": "Distribution that", "accent": "arrives", "h2": "on time, every", "muted": "day." },
+      { "tag": "Advance Logistics – 24h across Puerto Rico", "h1": "Distribution that", "accent": "arrives", "h2": "on time, every", "muted": "day." },
       { "tag": "Advance Solutions – Brand growth", "h1": "Brands that", "accent": "grow", "h2": "with strategy and", "muted": "data." },
       { "tag": "We develop businesses, build brands", "h1": "Strategy that", "accent": "sells", "h2": "and logistics that", "muted": "deliver." },
       { "tag": "Advance Depot – Warehousing & fulfillment in PR", "h1": "Inventory", "accent": "secure", "h2": "and ready to", "muted": "ship." }
@@ -60,7 +73,7 @@
     ]
   },
   "serviceItems": {
-    "s1": { "title": "Specialized 24h Delivery", "description": "Island-wide distribution at record speed, guaranteed to Vieques and Culebra.", "tags": ["fast delivery", "full island", "24 hours"] },
+    "s1": { "title": "Specialized 24h Delivery", "description": "Distribution across the island at record speed, guaranteed to Vieques and Culebra.", "tags": ["fast delivery", "full island", "24 hours"] },
     "s2": { "title": "Last-Mile Logistics", "description": "We connect your product to the end customer with the highest efficiency in the local market.", "tags": ["last mile", "distribution", "B2B"] },
     "s4": { "title": "Strategic Warehousing", "description": "Secure and optimized spaces for the storage and management of your inventory.", "tags": ["storage", "inventory", "security"] },
     "s5": { "title": "Fulfillment & Picking", "description": "End-to-end order management from receiving to final packaging.", "tags": ["fulfillment", "e-commerce", "orders"] },
