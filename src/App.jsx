@@ -804,32 +804,6 @@ const App = () => {
                   <button onClick={() => setActiveSection('services')} className="flex items-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-xl font-bold hover:bg-[#F37021] transition-all transform hover:-translate-y-1 shadow-xl">
                     {t('hero.exploreCta')} <ArrowRight size={20} />
                   </button>
-                  <div className="flex items-center gap-4 px-6 py-4">
-                    <div className="flex -space-x-3">
-                      {[
-                        { name: 'AxCare', favicon: 'https://www.axcare.com/favicon.ico', desc: 'Axis provee servicios de salud y equipos médicos directamente al hogar.' },
-                        { name: 'TRUST Beauty', favicon: 'https://static.cdninstagram.com/rsrc.php/v3/yI/r/VsNE-OHk_8a.png', desc: 'Trust Beauty, marca líder en los salones de belleza con en productos especializados para el cuidado del cabello.' },
-                        { name: 'Prodigy', favicon: 'https://www.prodigymeter.com/favicon.ico', desc: 'Compañía especializada en el desarrollo de sistemas de monitoreo de glucosa en sangre diseñados para ser accesibles, especialmente para personas con discapacidades visuales.' },
-                      ].map((client) => (
-                        <div key={client.name} className="relative group">
-                          <div className="w-10 h-10 rounded-full bg-slate-200 border-2 border-white overflow-hidden cursor-pointer hover:scale-110 transition-transform flex items-center justify-center">
-                            <img src={client.favicon} alt={client.name} className="w-8 h-8 object-contain rounded-full"
-                              onError={(e) => { e.currentTarget.style.display='none'; e.currentTarget.parentElement.innerHTML='<span style="font-size:14px;font-weight:700;color:#F37021">'+client.name[0]+'</span>'; }}
-                            />
-                          </div>
-                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-52 bg-white rounded-xl shadow-xl border border-slate-100 p-3 opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-50">
-                            <div className="flex items-center gap-2 mb-1">
-                              <img src={client.favicon} alt={client.name} className="w-5 h-5 rounded" />
-                              <span className="font-bold text-slate-900 text-sm">{client.name}</span>
-                            </div>
-                            <p className="text-xs text-slate-500 leading-snug">{client.desc}</p>
-                            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-white"></div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    <p className="text-sm font-bold text-slate-400">{t('hero.partnersLabel')}</p>
-                  </div>
                 </div>
               </div>
               <div className="relative">
