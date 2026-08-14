@@ -205,13 +205,16 @@ const TEAM_FALLBACK = {
       en: 'José Nieves is the founder and CEO of Advance Group. What began as a distribution operation has grown, under his leadership, into an integrated ecosystem of logistics, warehousing, packaging, and go-to-market solutions that today serves brands across Puerto Rico. His vision remains the one he started with: to give every client a partner who understands the terrain and delivers on every promise.',
     },
   },
-  membersHeading: { es: 'Jefes de Departamento', en: 'Department Heads' },
-  members: [
-    { name: 'Por definir', photoUrl: '', title: { es: 'Director de Operaciones', en: 'Operations Director' } },
-    { name: 'Por definir', photoUrl: '', title: { es: 'Gerente de Almacén', en: 'Warehouse Manager' } },
-    { name: 'Por definir', photoUrl: '', title: { es: 'Líder Comercial', en: 'Commercial Lead' } },
-    { name: 'Por definir', photoUrl: '', title: { es: 'Finanzas', en: 'Finance' } },
-  ],
+  teamPhotoUrl: '',
+  teamPhotoCaption: { es: 'El equipo de Advance Group.', en: 'The Advance Group team.' },
+  headcount: { value: 40, label: { es: 'personas en nuestro equipo', en: 'people on our team' } },
+  commitment: {
+    heading: { es: 'Nuestro compromiso', en: 'Our commitment' },
+    body: {
+      es: 'Conocemos las rutas de la isla, los muelles y los horarios de recibo de cada comercio. Esa experiencia es la diferencia entre una entrega a tiempo y una explicación. Nos medimos con la misma vara que nuestros clientes: producto completo, en la fecha acordada y en las condiciones en que salió. Cuando algo se sale de lo previsto, lo decimos antes de que te enteres por otro lado.',
+      en: "We know the island's routes, the ports, and the receiving hours of every store. That experience is the difference between an on-time delivery and an explanation. We hold ourselves to the same standard our clients do: complete product, on the agreed date, in the condition it left in. And when something goes off plan, you hear it from us first.",
+    },
+  },
 };
 
 // Elige el valor del idioma de un campo {es,en}, con fallback.
@@ -229,9 +232,7 @@ function mergeTeam(d, lang) {
   d = d || {};
   const F = TEAM_FALLBACK;
   const nonEmpty = (v, def) => (typeof v === 'string' && v.trim() ? v : def);
-  const members = Array.isArray(d.members) && d.members.length
-    ? d.members
-    : F.members;
+  const n = Number(d.headcount && d.headcount.value);
   return {
     heading: pickLang(d.heading, lang, pickLang(F.heading, lang, 'Nuestro Equipo')),
     intro: pickLang(d.intro, lang, pickLang(F.intro, lang, '')),
@@ -241,12 +242,16 @@ function mergeTeam(d, lang) {
       label: pickLang(d.founder && d.founder.label, lang, pickLang(F.founder.label, lang, '')),
       bio: pickLang(d.founder && d.founder.bio, lang, pickLang(F.founder.bio, lang, '')),
     },
-    membersHeading: pickLang(d.membersHeading, lang, pickLang(F.membersHeading, lang, 'Jefes de Departamento')),
-    members: members.map((m) => ({
-      name: nonEmpty(m && m.name, 'Por definir'),
-      photoUrl: (m && m.photoUrl) || '',
-      title: pickLang(m && m.title, lang, ''),
-    })),
+    teamPhotoUrl: (d.teamPhotoUrl) || '',
+    teamPhotoCaption: pickLang(d.teamPhotoCaption, lang, pickLang(F.teamPhotoCaption, lang, '')),
+    headcount: {
+      value: Number.isFinite(n) && n > 0 ? Math.round(n) : F.headcount.value,
+      label: pickLang(d.headcount && d.headcount.label, lang, pickLang(F.headcount.label, lang, '')),
+    },
+    commitment: {
+      heading: pickLang(d.commitment && d.commitment.heading, lang, pickLang(F.commitment.heading, lang, '')),
+      body: pickLang(d.commitment && d.commitment.body, lang, pickLang(F.commitment.body, lang, '')),
+    },
   };
 }
 
@@ -316,18 +321,44 @@ function TeamSection({ team }) {
         </div>
       </section>
 
-      {/* Jefes de departamento */}
+      {/* El equipo completo + cuántos somos + compromiso.
+          Sustituye a la grilla de jefes de departamento (pedido del cliente,
+          14-ago-2026): una sola foto de todos en vez de destacar directores. */}
       <section className="px-4 pb-24">
-        <div className="max-w-7xl mx-auto">
-          <h3 className="text-2xl font-black text-slate-900 mb-8">{team.membersHeading}</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {team.members.map((m, i) => (
-              <div key={i} className="text-center">
-                <Avatar name={m.name} photoUrl={m.photoUrl} className="w-full aspect-square rounded-3xl text-4xl mb-4" />
-                <p className="font-black text-slate-900">{m.name}</p>
-                {m.title && <p className="text-sm font-bold text-[#F37021]">{m.title}</p>}
-              </div>
-            ))}
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-[1.2fr_1fr] gap-10 items-stretch">
+          {/* Foto del equipo. Si todavía no la subieron, no se deja un hueco
+              roto: se explica que falta, y solo se ve en la web cuando esté. */}
+          {team.teamPhotoUrl ? (
+            <figure className="m-0">
+              <img
+                src={team.teamPhotoUrl}
+                alt={team.teamPhotoCaption || 'Equipo de Advance Group'}
+                className="w-full h-full min-h-[320px] object-cover rounded-[2.5rem]"
+              />
+              {team.teamPhotoCaption && (
+                <figcaption className="mt-3 text-sm text-slate-500">{team.teamPhotoCaption}</figcaption>
+              )}
+            </figure>
+          ) : (
+            <div className="min-h-[320px] rounded-[2.5rem] bg-slate-100 flex items-center justify-center p-10">
+              <p className="text-center text-slate-400 font-medium">{team.teamPhotoCaption}</p>
+            </div>
+          )}
+
+          <div className="flex flex-col gap-8 justify-center">
+            {/* El dato duro, en grande. */}
+            <div className="rounded-[2.5rem] bg-slate-900 text-white p-10">
+              <p className="text-6xl md:text-7xl font-black leading-none text-[#F37021]">
+                +{team.headcount.value}
+              </p>
+              <p className="mt-3 text-lg font-medium text-slate-300">{team.headcount.label}</p>
+            </div>
+
+            <div>
+              <div className="w-10 h-1.5 bg-[#F37021] rounded-full" />
+              <h3 className="mt-4 text-2xl font-black text-slate-900">{team.commitment.heading}</h3>
+              <p className="mt-3 text-lg text-slate-600 leading-relaxed">{team.commitment.body}</p>
+            </div>
           </div>
         </div>
       </section>
