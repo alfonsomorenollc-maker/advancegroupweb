@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import CookieBanner from './components/CookieBanner.jsx';
 import { db } from './firebase.js';
-import { collection, addDoc, serverTimestamp, doc, getDoc, getDocs } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import {
   Truck,
   Search,
@@ -606,19 +606,25 @@ const App = () => {
   React.useEffect(() => {
     getDoc(doc(db, 'orgs', 'org1', 'cms_content', 'page_nosotros'))
       .then((snap) => { if (snap.exists()) setAboutDoc(snap.data()); })
-      .catch(() => {});
+      .catch((e) => console.warn('[cms] nosotros:', e?.message || e));
     getDoc(doc(db, 'orgs', 'org1', 'cms_content', 'page_team'))
       .then((snap) => { if (snap.exists()) setTeamDoc(snap.data()); })
-      .catch(() => {});
+      .catch((e) => console.warn('[cms] equipo:', e?.message || e));
     getDoc(doc(db, 'orgs', 'org1', 'cms_content', 'site_images'))
       .then((snap) => { if (snap.exists()) setSiteImages(snap.data().slots || {}); })
-      .catch(() => {});
+      .catch((e) => console.warn('[cms] imágenes:', e?.message || e));
     getDoc(doc(db, 'orgs', 'org1', 'cms_content', 'site_sections'))
       .then((snap) => { if (snap.exists()) setSectionVisible(snap.data().visible || {}); })
-      .catch(() => {});
-    getDocs(collection(db, 'orgs', 'org1', 'cms_content'))
+      .catch((e) => console.warn('[cms] secciones:', e?.message || e));
+    // El filtro por `status == 'published'` NO es opcional: la regla del ERP
+    // solo deja leer documentos publicados a quien no ha iniciado sesión, y
+    // Firestore rechaza la consulta ENTERA si puede devolver algo prohibido.
+    // Sin este where, este getDocs devolvía PERMISSION_DENIED y `cmsList`
+    // quedaba vacío SIEMPRE — así que Blog, Noticias, Eventos y Empleos salían
+    // vacíos aunque el contenido estuviera publicado.
+    getDocs(query(collection(db, 'orgs', 'org1', 'cms_content'), where('status', '==', 'published')))
       .then((snap) => setCmsList(snap.docs.map((x) => ({ id: x.id, ...x.data() }))))
-      .catch(() => {});
+      .catch((e) => console.warn('[cms] no se pudo leer el contenido publicado:', e?.message || e));
   }, []);
   const siteImg = (key) => (siteImages && siteImages[key]) || '';
   // Una sub-sección se muestra solo si el owner la activó en el CMS. "Nosotros"
