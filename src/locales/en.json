@@ -37,7 +37,7 @@
     },
     "depot": {
       "name": "Advance Depot",
-      "description": "Puerto Rico's warehousing and fulfillment network: three Caguas facilities with refrigerated coverage, pick & pack and real-time inventory management — ready to ship in 24 hours."
+      "description": "Puerto Rico warehousing and fulfillment: our Caguas storage and distribution center with refrigerated coverage, pick & pack and real-time inventory management — ready to ship in 24 hours."
     },
     "solutions": {
       "name": "Advance Solutions",
@@ -74,6 +74,7 @@
   "serviceItems": {
     "s1": { "title": "Specialized 24h Delivery", "description": "Distribution across the island at record speed, guaranteed to Vieques and Culebra.", "tags": ["fast delivery", "full island", "24 hours"] },
     "s2": { "title": "Last-Mile Logistics", "description": "We connect your product to the end customer with the highest efficiency in the local market.", "tags": ["last mile", "distribution", "B2B"] },
+    "s3": { "title": "Safe Handling of Sensitive Products", "description": "Trained personnel and specialized protocols that protect the safety and integrity of every delivery.", "tags": ["sensitive goods", "protocols", "cold chain"] },
     "s4": { "title": "Strategic Warehousing", "description": "Secure and optimized spaces for the storage and management of your inventory.", "tags": ["storage", "inventory", "security"] },
     "s5": { "title": "Fulfillment & Picking", "description": "End-to-end order management from receiving to final packaging.", "tags": ["fulfillment", "e-commerce", "orders"] },
     "s6": { "title": "Custom Packaging", "description": "Design and provision of protective materials for critical and industrial cargo.", "tags": ["packaging", "protection", "materials"] },
@@ -164,8 +165,13 @@
       "Direct integration with your order management system for end-to-end visibility.",
       "Digital proof of delivery with signature, photo and timestamp at every stop."
     ],
+    "s3": [
+      "Drivers certified in HACCP, medical handling, white glove and hazmat, assigned to match what each load requires.",
+      "Temperature-controlled units with automatic validation: the system will not dispatch a refrigerated order on a dry vehicle.",
+      "End-to-end traceability with signed proof of delivery, photo and timestamp."
+    ],
     "s4": [
-      "3 Caguas facilities with refrigerated, hazmat and special cargo capacity.",
+      "Caguas storage and distribution center with refrigerated, hazmat and special cargo capacity.",
       "Real-time inventory with rotating cycle counts and low-stock alerts.",
       "FIFO, batch and expiration-date tracking — full traceability."
     ],

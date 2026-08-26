@@ -37,12 +37,12 @@ const NOSOTROS_FALLBACK_ES = {
   hero: {
     eyebrow: 'Sobre nosotros',
     title: 'Movemos a Puerto Rico con logística, empaque y soluciones B2B de punta a punta.',
-    subtitle: 'En Advance Group combinamos una flota moderna, almacenes estratégicos y tecnología propia para que tu producto llegue donde tiene que llegar — a tiempo, completo y en perfectas condiciones.',
+    subtitle: 'En Advance Group combinamos una flota moderna, nuestro centro de almacenaje y distribución en Caguas y tecnología propia para que tu producto llegue donde tiene que llegar — a tiempo, completo y en perfectas condiciones.',
     ctaSecondaryLabel: 'Contáctanos',
   },
   stats: [
     { value: '74', label: 'Vehículos en flota' },
-    { value: '3', label: 'Almacenes en Caguas' },
+    { value: 'Caguas', label: 'Centro de almacenaje y distribución' },
     { value: '100%', label: 'Cobertura de la isla' },
     { value: 'A la medida', label: 'Empaque corrugado' },
   ],
@@ -54,7 +54,7 @@ const NOSOTROS_FALLBACK_ES = {
   quienesSomos: {
     heading: 'Quiénes somos',
     paragraphs: [
-      'Advance Group es un grupo de empresas de logística y distribución con base en Caguas, Puerto Rico. Operamos una flota de **74 vehículos** —incluyendo unidades refrigeradas y con capacidades especiales— y una red de **3 almacenes** que nos permiten mover inventario con rapidez y precisión.',
+      'Advance Group es un grupo de empresas de logística y distribución con base en Caguas, Puerto Rico. Operamos una flota de **74 vehículos** —incluyendo unidades refrigeradas y con capacidades especiales— y nuestro **centro de almacenaje y distribución en Caguas**, que nos permiten mover inventario con rapidez y precisión.',
       'Complementamos el servicio con nuestra línea de empaque de **cartón corrugado**, con soluciones a la medida de cada cliente y un motor de selección por margen.',
       'Todo esto corre sobre **AdvanceOS**, el sistema operativo interno que construimos para orquestar cada cotización, orden, ruta y entrega en tiempo real.',
     ],
@@ -62,7 +62,7 @@ const NOSOTROS_FALLBACK_ES = {
   linesHeading: 'Lo que hacemos',
   lines: [
     { title: 'Logística', body: 'Distribución especializada en toda la isla, con entregas a tiempo incluyendo Vieques y Culebra. Cadena de frío, white glove y servicios médicos.' },
-    { title: 'Almacenaje', body: 'Tres almacenes en Caguas con zonas refrigeradas, secas y especializadas. Servicios 3PL con conteo cíclico e inventario en tiempo real.' },
+    { title: 'Almacenaje', body: 'Nuestro centro de almacenaje y distribución en Caguas, con zonas refrigeradas, secas y especializadas. Servicios 3PL con conteo cíclico e inventario en tiempo real.' },
     { title: 'Empaque', body: 'Cartón corrugado a la medida, con motor de selección por margen para optimizar el costo de empaque de cada cliente.' },
   ],
   valuesHeading: 'Nuestros valores',
@@ -84,12 +84,12 @@ const NOSOTROS_FALLBACK_EN = {
   hero: {
     eyebrow: 'About us',
     title: 'We move Puerto Rico with end-to-end logistics, packaging, and B2B solutions.',
-    subtitle: 'At Advance Group we combine a modern fleet, strategic warehouses, and our own technology so your product gets where it needs to go — on time, complete, and in perfect condition.',
+    subtitle: 'At Advance Group we combine a modern fleet, our Caguas storage and distribution center, and our own technology so your product gets where it needs to go — on time, complete, and in perfect condition.',
     ctaSecondaryLabel: 'Contact us',
   },
   stats: [
     { value: '74', label: 'Vehicles in fleet' },
-    { value: '3', label: 'Warehouses in Caguas' },
+    { value: 'Caguas', label: 'Storage & distribution center' },
     { value: '100%', label: 'Coverage across the island' },
     { value: 'Custom', label: 'Corrugated packaging' },
   ],
@@ -101,7 +101,7 @@ const NOSOTROS_FALLBACK_EN = {
   quienesSomos: {
     heading: 'Who we are',
     paragraphs: [
-      'Advance Group is a logistics and distribution group based in Caguas, Puerto Rico. We operate a fleet of **74 vehicles** —including refrigerated and specialty-capable units— and a network of **3 warehouses** that let us move inventory quickly and precisely.',
+      'Advance Group is a logistics and distribution group based in Caguas, Puerto Rico. We operate a fleet of **74 vehicles** —including refrigerated and specialty-capable units— and our **storage and distribution center in Caguas**, that let us move inventory quickly and precisely.',
       'We complement our service with our **corrugated cardboard** packaging line, with custom solutions for each client and a margin-based selection engine.',
       'All of this runs on **AdvanceOS**, the internal operating system we built to orchestrate every quote, order, route, and delivery in real time.',
     ],
@@ -109,7 +109,7 @@ const NOSOTROS_FALLBACK_EN = {
   linesHeading: 'What we do',
   lines: [
     { title: 'Logistics', body: 'Specialized distribution across the island, with on-time delivery including Vieques and Culebra. Cold chain, white glove, and medical services.' },
-    { title: 'Warehousing', body: 'Three warehouses in Caguas with refrigerated, dry, and specialized zones. 3PL services with cycle counting and real-time inventory.' },
+    { title: 'Warehousing', body: 'Our Caguas storage and distribution center, with refrigerated, dry, and specialized zones. 3PL services with cycle counting and real-time inventory.' },
     { title: 'Packaging', body: "Custom corrugated cardboard, with a margin-based selection engine to optimize each client's packaging cost." },
   ],
   valuesHeading: 'Our values',
@@ -445,6 +445,9 @@ const BUSINESS_LINES = {
 const SERVICES = [
   { id: 's1',  line: 'logistics', related: ['s4', 's7', 's10'] },
   { id: 's2',  line: 'logistics', related: ['s6', 's8'] },
+  // Manejo seguro de productos sensibles — pedido por un cliente (16-ago-2026).
+  // Recupera el hueco 's3' que había quedado libre en la numeración.
+  { id: 's3',  line: 'logistics', related: ['s1', 's4', 's5'] },
   { id: 's4',  line: 'depot',     related: ['s1', 's7', 's9'] },
   { id: 's5',  line: 'depot',     related: ['s1', 's7', 's8'] },
   { id: 's6',  line: 'depot',     related: ['s2', 's10'] },
@@ -462,7 +465,7 @@ const HERO_SLIDES = [
     altEs: 'Operación de distribución de Advance Group realizando entregas puntuales para negocios en Puerto Rico',
     titleEn: 'Advance Group | On-time distribution across Puerto Rico',
     altEn: 'Advance Group distribution operation handling on-time deliveries for businesses across Puerto Rico',
-    keywordsEs: 'Advance Group, distribución, logística, entregas puntuales, entregas a tiempo, entregas diarias, transporte, fulfillment, almacen, almacén, bodega, despacho, reparto, operaciones, cadena de suministro, Puerto Rico, entrega same-day, entrega el mismo día',
+    keywordsEs: 'Advance Group, distribución, logística, entregas puntuales, entregas a tiempo, entregas diarias, transporte, fulfillment, almacen, almacén, despacho, reparto, operaciones, cadena de suministro, Puerto Rico, entrega same-day, entrega el mismo día',
     keywordsEn: 'Advance Group, distribution, logistics, on-time delivery, daily delivery, fulfillment, warehousing, warehouse, storage, dispatch, route delivery, supply chain, last mile, same-day delivery, Puerto Rico logistics',
     slideIndex: 0,
   },
@@ -489,13 +492,13 @@ const HERO_SLIDES = [
     slideIndex: 2,
   },
   {
-    fileName: 'advance-group-depot-almacenaje-fulfillment-bodega-puerto-rico.jpg',
+    fileName: 'advance-group-depot-almacenaje-fulfillment-almacen-puerto-rico.jpg',
     photo: 'https://firebasestorage.googleapis.com/v0/b/advancegroup-web-4391643-961a3.firebasestorage.app/o/landing%2Fadvance-group-distribucion-logistica-entregas-puntuales-puerto-rico.jpg?alt=media&token=f47404af-8051-4a42-b4d8-b51e262b2413',
     titleEs: 'Advance Group | Advance Depot — Almacenaje y fulfillment en Puerto Rico',
     altEs: 'Advance Depot: centro de almacenaje, pick & pack y fulfillment de Advance Group en Caguas, Puerto Rico',
     titleEn: 'Advance Group | Advance Depot — Warehousing and fulfillment in Puerto Rico',
     altEn: 'Advance Depot: Advance Group warehousing, pick & pack and fulfillment center in Caguas, Puerto Rico',
-    keywordsEs: 'Advance Depot, almacenaje, bodega, fulfillment, picking, packing, inventario, almacén refrigerado, 3PL, gestión de inventario, Caguas, Puerto Rico, distribución, despacho',
+    keywordsEs: 'Advance Depot, almacenaje, almacén, fulfillment, picking, packing, inventario, almacén refrigerado, 3PL, gestión de inventario, Caguas, Puerto Rico, distribución, despacho',
     keywordsEn: 'Advance Depot, warehousing, warehouse, fulfillment, picking, packing, inventory management, refrigerated storage, 3PL, Caguas, Puerto Rico, distribution',
     slideIndex: 3,
   },
@@ -520,7 +523,7 @@ const VideoPlayer = () => {
     titleEn: 'Advance Group | Commercial strategy, distribution and logistics in Puerto Rico',
     descriptionEs: 'Video institucional de Advance Group mostrando su ecosistema de servicios en Puerto Rico, incluyendo distribución, logística, almacén, fulfillment, estrategia comercial, crecimiento de marcas, manejo de órdenes y soporte operacional para empresas.',
     descriptionEn: 'Corporate brand video for Advance Group showcasing its service ecosystem in Puerto Rico, including distribution, logistics, warehousing, fulfillment, commercial strategy, brand growth, order management and operational support for businesses.',
-    keywordsEs: 'Advance Group, logística, distribución, almacén, almacen, bodega, fulfillment, estrategia comercial, crecimiento de marcas, manejo de órdenes, soporte operacional, entregas, despacho, reparto, Puerto Rico, supply chain, ventas, operaciones',
+    keywordsEs: 'Advance Group, logística, distribución, almacén, almacen, fulfillment, estrategia comercial, crecimiento de marcas, manejo de órdenes, soporte operacional, entregas, despacho, reparto, Puerto Rico, supply chain, ventas, operaciones',
     keywordsEn: 'Advance Group, logistics, distribution, warehousing, warehouse, storage, fulfillment, commercial strategy, brand growth, order management, operational support, delivery, dispatch, route delivery, supply chain, Puerto Rico logistics, sales enablement',
     captionEs: 'Estrategia que vende. Logística que cumple.',
     captionEn: 'Strategy that sells. Logistics that deliver.',
