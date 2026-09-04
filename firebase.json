@@ -1,6 +1,7 @@
 {
   "hosting": {
     "site": "advancegroup-web-4391643-961a3",
+    "predeploy": ["npm run build"],
     "public": "dist",
     "ignore": [
       "firebase.json",
