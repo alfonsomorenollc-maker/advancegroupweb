@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import CookieBanner from './components/CookieBanner.jsx';
+import JobApplyModal from './components/JobApplyModal.jsx';
 import { db } from './firebase.js';
 import { collection, addDoc, serverTimestamp, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import {
@@ -367,9 +368,11 @@ function TeamSection({ team }) {
 }
 
 // Grilla de contenido editorial (blog/noticias/eventos/empleos) desde el CMS.
-// `ctaText` + `ctaHrefFor` (opcionales) agregan un enlace por tarjeta — Empleos
-// lo usa para llevar al formulario de aplicación (vive en el ERP /careers).
-function ContentGrid({ title, items, lang, emptyText, ctaText, ctaHrefFor }) {
+// `onItemClick` + `ctaText` (opcionales) vuelven cada tarjeta un botón — Empleos
+// lo usa para abrir el detalle + formulario de aplicación AQUÍ MISMO, en la web
+// pública (el aplicante nunca entra al ERP; la aplicación se escribe a la base
+// que lee Reclutamiento).
+function ContentGrid({ title, items, lang, emptyText, ctaText, onItemClick }) {
   return (
     <section className="px-4 pt-16 pb-24">
       <div className="max-w-7xl mx-auto">
@@ -386,25 +389,27 @@ function ContentGrid({ title, items, lang, emptyText, ctaText, ctaHrefFor }) {
               const date = item.publishedAt && item.publishedAt.seconds
                 ? new Date(item.publishedAt.seconds * 1000).toLocaleDateString(lang === 'en' ? 'en-US' : 'es-PR', { year: 'numeric', month: 'long', day: 'numeric' })
                 : '';
+              const clickable = typeof onItemClick === 'function';
+              const Card = clickable ? 'button' : 'div';
               return (
-                <div key={item.id} className="rounded-[2rem] border border-slate-100 bg-white overflow-hidden hover:shadow-2xl hover:shadow-orange-500/10 transition-all">
+                <Card
+                  key={item.id}
+                  type={clickable ? 'button' : undefined}
+                  onClick={clickable ? () => onItemClick(item) : undefined}
+                  className={`text-left rounded-[2rem] border border-slate-100 bg-white overflow-hidden hover:shadow-2xl hover:shadow-orange-500/10 transition-all ${clickable ? 'cursor-pointer hover:border-[#F37021]/40 focus:outline-none focus:ring-2 focus:ring-[#F37021]/40' : ''}`}
+                >
                   {img && <img src={img} alt={title2} className="w-full h-48 object-cover" />}
                   <div className="p-6">
                     {date && <p className="text-xs font-black uppercase tracking-widest text-[#F37021]">{date}</p>}
                     <h3 className="mt-2 text-xl font-black text-slate-900">{title2}</h3>
                     {excerpt && <p className="mt-2 text-slate-500 font-medium leading-relaxed">{excerpt}</p>}
-                    {ctaText && ctaHrefFor && (
-                      <a
-                        href={ctaHrefFor(item)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-4 inline-flex items-center gap-1.5 text-sm font-black text-[#F37021] hover:underline"
-                      >
+                    {clickable && ctaText && (
+                      <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-black text-[#F37021]">
                         {ctaText} <span aria-hidden="true">→</span>
-                      </a>
+                      </span>
                     )}
                   </div>
-                </div>
+                </Card>
               );
             })}
           </div>
@@ -643,6 +648,8 @@ const App = () => {
   const [heroSlide, setHeroSlide] = React.useState(0);
   // Sub-pestaña dentro de "Nosotros".
   const [aboutTab, setAboutTab] = React.useState('about');
+  // Vacante abierta en el modal de detalle + aplicación (Empleos).
+  const [selectedJob, setSelectedJob] = React.useState(null);
   // "Sobre nosotros" + "Nuestro Equipo" + contenido editorial — leídos del CMS.
   const [aboutDoc, setAboutDoc] = React.useState(null);
   const [teamDoc, setTeamDoc] = React.useState(null);
@@ -1103,7 +1110,7 @@ const App = () => {
           {aboutTab === 'blog' && sectionOn('blog') && <ContentGrid title={t('about.tabBlog')} items={contentByType('blog')} lang={uiLang} emptyText={t('about.emptyBlog')} />}
           {aboutTab === 'news' && sectionOn('news') && <ContentGrid title={t('about.tabNews')} items={contentByType('noticias')} lang={uiLang} emptyText={t('about.emptyNews')} />}
           {aboutTab === 'events' && sectionOn('events') && <ContentGrid title={t('about.tabEvents')} items={contentByType('eventos')} lang={uiLang} emptyText={t('about.emptyEvents')} />}
-          {aboutTab === 'jobs' && sectionOn('jobs') && <ContentGrid title={t('about.tabJobs')} items={contentByType('empleos')} lang={uiLang} emptyText={t('about.emptyJobs')} ctaText={t('about.applyCta')} ctaHrefFor={(item) => `https://app.advancegrouppr.com/careers/${item.slug || item.id}`} />}
+          {aboutTab === 'jobs' && sectionOn('jobs') && <ContentGrid title={t('about.tabJobs')} items={contentByType('empleos').filter((j) => (j.jobStatus || 'abierta') === 'abierta')} lang={uiLang} emptyText={t('about.emptyJobs')} ctaText={t('about.applyCta')} onItemClick={setSelectedJob} />}
         </div>
       )}
 
@@ -1401,6 +1408,7 @@ const App = () => {
       </footer>
 
       <CookieBanner />
+      {selectedJob && <JobApplyModal job={selectedJob} lang={uiLang} onClose={() => setSelectedJob(null)} />}
 
       {/* SERVICE MODAL */}
       {selectedService && (
