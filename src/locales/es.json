@@ -21,6 +21,9 @@
   },
   "jobs": {
     "close": "Cerrar",
+    "copyLink": "Copiar enlace de esta vacante",
+    "linkCopied": "¡Enlace copiado!",
+    "copyManual": "Copia este enlace:",
     "requirements": "Requisitos",
     "typeFullTime": "Tiempo completo",
     "typePartTime": "Tiempo parcial",

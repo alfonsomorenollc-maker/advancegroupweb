@@ -105,6 +105,20 @@ export default function JobApplyModal({ job, lang, onClose }) {
   const [error, setError] = React.useState('');
   const [sending, setSending] = React.useState(false);
   const [done, setDone] = React.useState(false);
+  const [copied, setCopied] = React.useState(false);
+
+  // Enlace directo de esta vacante (la URL ya es /empleos/{slug}): para pegarlo
+  // en una publicación o medir tráfico por vacante.
+  const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      window.prompt(t('jobs.copyManual'), shareUrl);
+    }
+  };
 
   React.useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') onClose(); };
@@ -203,6 +217,10 @@ export default function JobApplyModal({ job, lang, onClose }) {
             {job.location && <span className="rounded-full bg-slate-100 px-3 py-1">{job.location}</span>}
             {job.jobType && <span className="rounded-full bg-orange-50 px-3 py-1 text-[#F37021]">{t(JOB_TYPE_KEYS[job.jobType] || 'jobs.typeFullTime')}</span>}
           </div>
+          <button type="button" onClick={copyLink} className="mt-3 inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-slate-500 hover:text-[#F37021] transition-colors">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7" /><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7" /></svg>
+            {copied ? t('jobs.linkCopied') : t('jobs.copyLink')}
+          </button>
 
           {/* Descripción y requisitos */}
           {body && <div className="mt-6"><Body text={body} /></div>}

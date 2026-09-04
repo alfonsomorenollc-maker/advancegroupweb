@@ -21,6 +21,9 @@
   },
   "jobs": {
     "close": "Close",
+    "copyLink": "Copy link to this position",
+    "linkCopied": "Link copied!",
+    "copyManual": "Copy this link:",
     "requirements": "Requirements",
     "typeFullTime": "Full time",
     "typePartTime": "Part time",

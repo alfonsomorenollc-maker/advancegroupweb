@@ -1,5 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { pathToView, viewToPath, jobSlugOf } from './routes.js';
 import CookieBanner from './components/CookieBanner.jsx';
 import JobApplyModal from './components/JobApplyModal.jsx';
 import { db } from './firebase.js';
@@ -639,17 +641,29 @@ const SERVICE_OPTION_KEYS = [
 const App = () => {
   const { t, i18n } = useTranslation();
 
-  const [activeSection, setActiveSection] = React.useState('home');
+  // La URL es la fuente de verdad de la navegación (ver routes.js): sección,
+  // sub-pestaña de Nosotros y vacante abierta salen del pathname, y los
+  // "setters" de abajo navegan en vez de mutar estado — así cada vista tiene
+  // enlace propio (compartible, medible, con botón atrás funcional).
+  const location = useLocation();
+  const navigate = useNavigate();
+  const view = React.useMemo(() => pathToView(location.pathname), [location.pathname]);
+  const activeSection = view.section;
+  const aboutTab = view.tab;
+  const setActiveSection = React.useCallback((section) => navigate(viewToPath({ section })), [navigate]);
+  const setAboutTab = React.useCallback((tab) => navigate(viewToPath({ section: 'about', tab })), [navigate]);
   const [filter, setFilter] = React.useState('all');
   const [searchQuery, setSearchQuery] = React.useState('');
   const [selectedService, setSelectedService] = React.useState(null);
   const [formStatus, setFormStatus] = React.useState('idle'); // idle|submitting|success|error
   const [selectedServiceKeys, setSelectedServiceKeys] = React.useState([]);
   const [heroSlide, setHeroSlide] = React.useState(0);
-  // Sub-pestaña dentro de "Nosotros".
-  const [aboutTab, setAboutTab] = React.useState('about');
-  // Vacante abierta en el modal de detalle + aplicación (Empleos).
-  const [selectedJob, setSelectedJob] = React.useState(null);
+  // Vacante abierta en el modal (Empleos): /empleos/{slug}. Abrir = navegar a
+  // su enlace; cerrar = volver a /empleos.
+  const setSelectedJob = React.useCallback(
+    (job) => navigate(viewToPath({ section: 'about', tab: 'jobs', jobSlug: jobSlugOf(job) })),
+    [navigate],
+  );
   // "Sobre nosotros" + "Nuestro Equipo" + contenido editorial — leídos del CMS.
   const [aboutDoc, setAboutDoc] = React.useState(null);
   const [teamDoc, setTeamDoc] = React.useState(null);
@@ -686,6 +700,25 @@ const App = () => {
   const uiLang = i18n.language === 'en' ? 'en' : 'es';
   const aboutContent = mergeAbout(aboutDoc, uiLang);
   const teamContent = mergeTeam(teamDoc, uiLang);
+  // Vacante que pide la URL (/empleos/{slug}), resuelta contra el CMS por slug
+  // o por id. Mientras el CMS carga es null (no se muestra nada roto).
+  const selectedJob = React.useMemo(() => {
+    if (!view.jobSlug) return null;
+    return cmsList.find((c) => c.type === 'empleos' && c.status === 'published' && (c.slug === view.jobSlug || c.id === view.jobSlug)) || null;
+  }, [view.jobSlug, cmsList]);
+
+  // Título de la pestaña del navegador por vista (también ayuda a compartir y
+  // a distinguir páginas en analítica).
+  React.useEffect(() => {
+    const base = 'Advance Group';
+    let title = base;
+    if (selectedJob) title = `${cmsText(selectedJob, 'title', i18n.language === 'en' ? 'en' : 'es')} · ${base}`;
+    else if (activeSection === 'about') title = `${t(ABOUT_TABS.find((x) => x.key === aboutTab)?.i18n || 'nav.about')} · ${base}`;
+    else if (activeSection === 'services') title = `${t('nav.solutions')} · ${base}`;
+    else if (activeSection === 'contact') title = `${t('nav.contact')} · ${base}`;
+    document.title = title;
+  }, [activeSection, aboutTab, selectedJob, i18n.language, t]);
+
   // Contenido editorial publicado por tipo.
   const contentByType = (type) => cmsList
     .filter((c) => c.type === type && c.status === 'published')
