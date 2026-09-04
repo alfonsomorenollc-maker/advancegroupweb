@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
+import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
+import { getStorage, connectStorageEmulator } from 'firebase/storage';
 
 // La web pública LEE el CMS del ERP y ESCRIBE las aplicaciones de empleo a la
 // misma base (orgs/org1/job_applicants) y su CV al mismo Storage
@@ -18,3 +18,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
+
+// Emuladores locales (QA E2E sin tocar producción). Solo si Vite corre con
+// VITE_FIREBASE_EMULATOR=1; en el build de producción este bloque no aplica.
+if (import.meta.env.VITE_FIREBASE_EMULATOR === '1') {
+  const host = import.meta.env.VITE_FIREBASE_EMULATOR_HOST || '127.0.0.1';
+  connectFirestoreEmulator(db, host, 8080);
+  connectStorageEmulator(storage, host, 9199);
+}

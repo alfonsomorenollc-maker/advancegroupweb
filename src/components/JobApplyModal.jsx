@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { collection, doc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes } from 'firebase/storage';
 import { db, storage } from '../firebase.js';
 
 // Detalle de una vacante + formulario de aplicación, TODO dentro de la web
@@ -159,11 +159,14 @@ export default function JobApplyModal({ job, lang, onClose }) {
       // El id se genera ANTES: es el path del CV y el id del documento.
       const applicantId = doc(collection(db, 'orgs', ORG_ID, 'job_applicants')).id;
 
-      let resumeUrl, resumePath;
+      // El CV se sube y se guarda su RUTA. No se pide la URL de descarga aquí:
+      // eso exige permiso de lectura, que un aplicante sin sesión no tiene (y
+      // no debe tener — un CV es dato personal). El reclutador, con sesión,
+      // resuelve la URL desde la ruta cuando lo abre.
+      let resumePath;
       if (file) {
         const path = `applicants/${applicantId}/${safeFileName(file.name)}`;
-        const snap = await uploadBytes(ref(storage, path), file, { contentType: file.type });
-        resumeUrl = await getDownloadURL(snap.ref);
+        await uploadBytes(ref(storage, path), file, { contentType: file.type });
         resumePath = path;
       }
 
@@ -182,8 +185,7 @@ export default function JobApplyModal({ job, lang, onClose }) {
       if (form.phone.trim()) payload.phone = form.phone.trim();
       if (form.linkedin.trim()) payload.linkedin = form.linkedin.trim();
       if (form.coverLetter.trim()) payload.coverLetter = form.coverLetter.trim();
-      if (resumeUrl) payload.resumeUrl = resumeUrl;
-      if (resumePath) payload.resumePath = resumePath;
+      if (resumePath) { payload.resumePath = resumePath; payload.resumeFileName = file.name; }
       const eeoClean = {};
       for (const k of Object.keys(eeo)) if (eeo[k] !== NOT_SAY) eeoClean[k] = eeo[k];
       if (Object.keys(eeoClean).length) payload.eeo = eeoClean;
