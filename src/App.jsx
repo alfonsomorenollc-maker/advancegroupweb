@@ -27,7 +27,8 @@ import {
   HeartHandshake,
   MapPin,
   Warehouse,
-  Package
+  Package,
+  Menu
 } from 'lucide-react';
 
 // ─── "SOBRE NOSOTROS" — contenido editable desde el CMS de AdvanceOS ────────
@@ -652,6 +653,9 @@ const App = () => {
   const aboutTab = view.tab;
   const setActiveSection = React.useCallback((section) => navigate(viewToPath({ section })), [navigate]);
   const setAboutTab = React.useCallback((tab) => navigate(viewToPath({ section: 'about', tab })), [navigate]);
+  // Menú móvil (hamburguesa). Se cierra solo al navegar a otra ruta.
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  React.useEffect(() => { setMenuOpen(false); }, [location.pathname]);
   const [filter, setFilter] = React.useState('all');
   const [searchQuery, setSearchQuery] = React.useState('');
   const [selectedService, setSelectedService] = React.useState(null);
@@ -862,10 +866,53 @@ const App = () => {
               <span className={i18n.language === 'es' ? 'text-[#F37021]' : 'text-slate-300'}>ES</span>
             </button>
           </div>
-          <button onClick={() => setActiveSection('contact')} className="bg-[#F37021] text-white px-6 py-2.5 rounded-lg font-bold hover:bg-[#d65d18] transition-all shadow-lg shadow-orange-200">
-            {t('nav.quote')}
-          </button>
+          <div className="flex items-center gap-2">
+            <button onClick={() => setActiveSection('contact')} className="bg-[#F37021] text-white px-4 md:px-6 py-2.5 rounded-lg font-bold hover:bg-[#d65d18] transition-all shadow-lg shadow-orange-200 text-sm md:text-base">
+              {t('nav.quote')}
+            </button>
+            {/* Hamburguesa — solo en móvil (el menú de arriba es hidden md:flex) */}
+            <button
+              type="button"
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label={t('nav.menu')}
+              aria-expanded={menuOpen}
+              className="md:hidden p-2.5 rounded-lg border border-slate-200 text-slate-700 hover:border-[#F37021] hover:text-[#F37021] transition-colors"
+            >
+              {menuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
         </div>
+
+        {/* Menú móvil desplegable */}
+        {menuOpen && (
+          <div className="md:hidden border-t border-gray-100 bg-white shadow-xl">
+            <div className="px-4 py-3 flex flex-col font-bold text-sm uppercase tracking-widest text-slate-600">
+              {[
+                ['home', 'nav.home', () => setActiveSection('home')],
+                ['services', 'nav.solutions', () => setActiveSection('services')],
+                ['about', 'nav.about', () => { setActiveSection('about'); setAboutTab('about'); }],
+                ['contact', 'nav.contact', () => setActiveSection('contact')],
+              ].map(([key, i18nKey, go]) => (
+                <button
+                  key={key}
+                  onClick={() => { go(); setMenuOpen(false); }}
+                  className={`flex items-center justify-between py-3.5 border-b border-gray-100 text-left hover:text-[#F37021] transition-colors ${activeSection === key ? 'text-[#F37021]' : ''}`}
+                >
+                  {t(i18nKey)}
+                  <ChevronRight size={16} className="text-slate-300" />
+                </button>
+              ))}
+              <button
+                onClick={() => i18n.changeLanguage(i18n.language === 'es' ? 'en' : 'es')}
+                className="mt-3 mb-1 self-start flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-black tracking-widest text-slate-500 hover:border-[#F37021] hover:text-[#F37021] transition-all"
+              >
+                <span className={i18n.language === 'en' ? 'text-[#F37021]' : 'text-slate-300'}>EN</span>
+                <span className="text-slate-200">|</span>
+                <span className={i18n.language === 'es' ? 'text-[#F37021]' : 'text-slate-300'}>ES</span>
+              </button>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* HOME */}
@@ -1162,9 +1209,12 @@ const App = () => {
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                   <input type="text" placeholder={t('services.searchPlaceholder')} className="w-full md:w-80 pl-12 pr-4 py-4 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-orange-500 transition-all font-medium" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                 </div>
-                <div className="flex bg-slate-100 p-1.5 rounded-2xl">
+                {/* flex-wrap: en móvil los 4 filtros no caben en una línea; sin
+                    wrap el último quedaba fuera de la pantalla y estiraba la
+                    página entera (y con ella el encabezado fijo). */}
+                <div className="flex flex-wrap bg-slate-100 p-1.5 rounded-2xl">
                   {['all', 'logistics', 'depot', 'solutions'].map((l) => (
-                    <button key={l} onClick={() => setFilter(l)} className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${filter === l ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>
+                    <button key={l} onClick={() => setFilter(l)} className={`px-4 md:px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${filter === l ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>
                       {l === 'all' ? t('services.filterAll') : l}
                     </button>
                   ))}
