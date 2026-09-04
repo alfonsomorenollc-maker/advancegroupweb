@@ -367,7 +367,9 @@ function TeamSection({ team }) {
 }
 
 // Grilla de contenido editorial (blog/noticias/eventos/empleos) desde el CMS.
-function ContentGrid({ title, items, lang, emptyText }) {
+// `ctaText` + `ctaHrefFor` (opcionales) agregan un enlace por tarjeta — Empleos
+// lo usa para llevar al formulario de aplicación (vive en el ERP /careers).
+function ContentGrid({ title, items, lang, emptyText, ctaText, ctaHrefFor }) {
   return (
     <section className="px-4 pt-16 pb-24">
       <div className="max-w-7xl mx-auto">
@@ -391,6 +393,16 @@ function ContentGrid({ title, items, lang, emptyText }) {
                     {date && <p className="text-xs font-black uppercase tracking-widest text-[#F37021]">{date}</p>}
                     <h3 className="mt-2 text-xl font-black text-slate-900">{title2}</h3>
                     {excerpt && <p className="mt-2 text-slate-500 font-medium leading-relaxed">{excerpt}</p>}
+                    {ctaText && ctaHrefFor && (
+                      <a
+                        href={ctaHrefFor(item)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-4 inline-flex items-center gap-1.5 text-sm font-black text-[#F37021] hover:underline"
+                      >
+                        {ctaText} <span aria-hidden="true">→</span>
+                      </a>
+                    )}
                   </div>
                 </div>
               );
@@ -1091,7 +1103,7 @@ const App = () => {
           {aboutTab === 'blog' && sectionOn('blog') && <ContentGrid title={t('about.tabBlog')} items={contentByType('blog')} lang={uiLang} emptyText={t('about.emptyBlog')} />}
           {aboutTab === 'news' && sectionOn('news') && <ContentGrid title={t('about.tabNews')} items={contentByType('noticias')} lang={uiLang} emptyText={t('about.emptyNews')} />}
           {aboutTab === 'events' && sectionOn('events') && <ContentGrid title={t('about.tabEvents')} items={contentByType('eventos')} lang={uiLang} emptyText={t('about.emptyEvents')} />}
-          {aboutTab === 'jobs' && sectionOn('jobs') && <ContentGrid title={t('about.tabJobs')} items={contentByType('empleos')} lang={uiLang} emptyText={t('about.emptyJobs')} />}
+          {aboutTab === 'jobs' && sectionOn('jobs') && <ContentGrid title={t('about.tabJobs')} items={contentByType('empleos')} lang={uiLang} emptyText={t('about.emptyJobs')} ctaText={t('about.applyCta')} ctaHrefFor={(item) => `https://app.advancegrouppr.com/careers/${item.slug || item.id}`} />}
         </div>
       )}
 
