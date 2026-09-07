@@ -63,6 +63,7 @@
         "*.log"
       ],
       "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" ci --no-audit --no-fund",
         "cp dist/index.html functions/index.template.html"
       ]
     }
