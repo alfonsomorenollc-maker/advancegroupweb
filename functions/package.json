@@ -1,0 +1,10 @@
+{
+  "name": "advancegroup-web-functions",
+  "description": "Vista previa (Open Graph / JSON-LD) por vacante para advancegrouppr.com/empleos/{slug}",
+  "private": true,
+  "main": "index.js",
+  "engines": { "node": "22" },
+  "dependencies": {
+    "firebase-functions": "^6.3.2"
+  }
+}

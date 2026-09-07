@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+functions/node_modules
+functions/index.template.html
+functions/.env*
