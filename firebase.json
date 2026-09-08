@@ -13,20 +13,6 @@
     ],
     "rewrites": [
       {
-        "source": "/empleos",
-        "function": {
-          "functionId": "ogEmpleos",
-          "region": "us-central1"
-        }
-      },
-      {
-        "source": "/empleos/**",
-        "function": {
-          "functionId": "ogEmpleos",
-          "region": "us-central1"
-        }
-      },
-      {
         "source": "**",
         "destination": "/index.html"
       }
